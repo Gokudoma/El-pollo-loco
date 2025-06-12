@@ -1,8 +1,8 @@
 class MovableObject {
     x = 120;
     y = 280;
-    height= 150;
-    width= 100;
+    height = 150;
+    width = 100;
     img;
     imageCache = {};
     currentImage = 0;
@@ -10,21 +10,22 @@ class MovableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
+    animationFrameSkip = 0;
+    animationSkipThreshold = 7;
 
 
     applyGravity(){
         setInterval(() => {
-            if(this.isAboveGround()) {
-            this.y -= this.speedY;
-            this.speedY -= this.acceleration;
+            if(this.isAboveGround() || this.speedY > 0) {
+                this.y -= this.speedY;
+                this.speedY -= this.acceleration;
             }
-        }, 1000 / 30);
+        }, 1000 / 25);
     }
 
     isAboveGround(){
         return this.y < 175;
     }
-
 
     loadImage(path) {
         this.img = new Image();
@@ -33,28 +34,31 @@ class MovableObject {
 
     loadImages(arr){
         arr.forEach((path) => {
-        let img = new Image();
-        img.src = path;
-        this.imageCache[path] = img;
+            let img = new Image();
+            img.src = path;
+            this.imageCache[path] = img;
         });
-
     }
 
     playAnimation(images) {
-        let i = this.currentImage % this.IMAGES_WALKING.length;
-        let path = images[i];
-        this.img = this.imageCache[path];
-        this.currentImage++;
+        this.animationFrameSkip++;
+
+        if (this.animationFrameSkip >= this.animationSkipThreshold) {
+            let i = this.currentImage % images.length;
+            let path = images[i];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+            this.animationFrameSkip = 0;
+        }
     }
 
-
     moveRight() {
-        console.log('Moving right');
-    }    
+        this.x += this.speed;
+        this.otherDirection = false;
+    }
 
     moveLeft() {
-        setInterval(() => {
-            this.x -= this.speed;
-        }, 1000 / 60);
+        this.x -= this.speed;
+        this.otherDirection = true;
     }
 }
