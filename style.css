@@ -6,8 +6,26 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    font-family: 'flyingbubble', Arial, Helvetica, sans-serif;
+    font-size: 60px;
+    color: rgb(244, 168, 26);
+}
+
+h1 {
+    text-shadow: 15px 8px 20px rgba(0, 0, 0, 1);
 }
 
 canvas {
     background-color: black;
+}
+
+@font-face {
+    font-family: 'flyingbubble';
+    src: url("./fonts/flyingbubble.otf") format("opentype");
+}
+
+@font-face {
+    font-family: 'flyingbubble';
+    font-weight: bold;
+    src: url("./fonts/flyingbubble.otf") format("opentype");
 }
