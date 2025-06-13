@@ -15,8 +15,9 @@ h1 {
     text-shadow: 15px 8px 20px rgba(0, 0, 0, 1);
 }
 
-canvas {
+#canvas {
     background-color: black;
+    border: 1px solid black;
 }
 
 @font-face {
