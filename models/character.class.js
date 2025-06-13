@@ -4,6 +4,8 @@ class Character extends MovableObject {
     y = 175;
     x = 20;
     speed = 5;
+    energy = 100;
+    lastHit = 0;
 
     offset = {
         top: 120,
@@ -46,6 +48,22 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/idle/I-10.png'
     ];
 
+    IMAGES_HURT = [
+        'img/2_character_pepe/4_hurt/H-41.png',
+        'img/2_character_pepe/4_hurt/H-42.png',
+        'img/2_character_pepe/4_hurt/H-43.png'
+    ];
+
+    IMAGES_DEAD = [
+        'img/2_character_pepe/5_dead/D-51.png',
+        'img/2_character_pepe/5_dead/D-52.png',
+        'img/2_character_pepe/5_dead/D-53.png',
+        'img/2_character_pepe/5_dead/D-54.png',
+        'img/2_character_pepe/5_dead/D-55.png',
+        'img/2_character_pepe/5_dead/D-56.png',
+        'img/2_character_pepe/5_dead/D-57.png'
+    ]
+
     world;
 
     constructor(){
@@ -53,6 +71,8 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
         this.animate();
     }
@@ -72,15 +92,18 @@ class Character extends MovableObject {
 
             this.world.camera_x = -this.x +100;
 
-            if(this.isAboveGround() || this.speedY > 0) {
+            if(this.isDead()) {
+               this.playAnimation(this.IMAGES_DEAD, 1);
+            } else if(this.isHurt()){
+                this.playAnimation(this.IMAGES_HURT, 10); 
+            } else if(this.isAboveGround() || this.speedY > 0) {
                 this.playAnimation(this.IMAGES_JUMPING, 3);
-            }
-            else if (!this.isAboveGround() && !(this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
+            } else if (!this.isAboveGround() && !(this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
                 this.playAnimation(this.IMAGES_IDLE, 5);
+            } else if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
+                this.playAnimation(this.IMAGES_WALKING, 1);
             }
-            else if (!this.isAboveGround() && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
-                 this.playAnimation(this.IMAGES_WALKING, 1);
-            }
+            
         }, 1000 / 60);
     }
 

@@ -73,10 +73,29 @@ class MovableObject {
         const moHeight = mo.height - moOffsetTop - moOffsetBottom;
 
         return thisX < moX + moWidth &&
-               thisY < moY + moHeight &&
-               thisX + thisWidth > moX &&
-               thisY + thisHeight > moY;
+           thisY < moY + moHeight &&
+           thisX + thisWidth > moX &&
+           thisY + thisHeight > moY;
     }
+
+    hit() {
+        this.energy -= 5;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    } 
+    
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit;
+        timepassed = timepassed / 1000;
+        return timepassed < 0.3;
+    }
+
+    isDead() {
+        return this.energy == 0;
+    }    
 
     loadImages(arr){
         arr.forEach((path) => {
