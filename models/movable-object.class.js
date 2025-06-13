@@ -13,6 +13,12 @@ class MovableObject {
     animationFrameSkip = 0;
     animationSkipThreshold = 7;
 
+    offset = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
 
     applyGravity(){
         setInterval(() => {
@@ -37,14 +43,39 @@ class MovableObject {
     }
 
     drawFrame(ctx) {
-
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {    
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) { 
             ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = "blue";
-            ctx.rect(this.x, this.y, this.width, this.height);
+            ctx.lineWidth = '3';
+            ctx.strokeStyle = "red";
+            const drawX = this.x + this.offset.left;
+            const drawY = this.y + this.offset.top;
+            const drawWidth = this.width - this.offset.left - this.offset.right;
+            const drawHeight = this.height - this.offset.top - this.offset.bottom;
+            ctx.rect(drawX, drawY, drawWidth, drawHeight);
             ctx.stroke();
-        }    
+        } 
+    }
+
+    isColliding(mo) {
+        const thisX = this.x + this.offset.left;
+        const thisY = this.y + this.offset.top;
+        const thisWidth = this.width - this.offset.left - this.offset.right;
+        const thisHeight = this.height - this.offset.top - this.offset.bottom;
+
+        const moOffsetLeft = mo.offset ? mo.offset.left : 0;
+        const moOffsetRight = mo.offset ? mo.offset.right : 0;
+        const moOffsetTop = mo.offset ? mo.offset.top : 0;
+        const moOffsetBottom = mo.offset ? mo.offset.bottom : 0;
+
+        const moX = mo.x + moOffsetLeft;
+        const moY = mo.y + moOffsetTop;
+        const moWidth = mo.width - moOffsetLeft - moOffsetRight;
+        const moHeight = mo.height - moOffsetTop - moOffsetBottom;
+
+        return thisX < moX + moWidth &&
+               thisY < moY + moHeight &&
+               thisX + thisWidth > moX &&
+               thisY + thisHeight > moY;
     }
 
     loadImages(arr){
