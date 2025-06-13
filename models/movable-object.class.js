@@ -26,20 +26,6 @@ class MovableObject extends DrawableObject {
         return this.y < 175;
     }
 
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) { 
-            ctx.beginPath();
-            ctx.lineWidth = '3';
-            ctx.strokeStyle = "red";
-            const drawX = this.x + this.offset.left;
-            const drawY = this.y + this.offset.top;
-            const drawWidth = this.width - this.offset.left - this.offset.right;
-            const drawHeight = this.height - this.offset.top - this.offset.bottom;
-            ctx.rect(drawX, drawY, drawWidth, drawHeight);
-            ctx.stroke();
-        } 
-    }
-
     isColliding(mo) {
         const thisX = this.x + this.offset.left;
         const thisY = this.y + this.offset.top;
