@@ -9,15 +9,69 @@ body {
     font-family: 'flyingbubble', Arial, Helvetica, sans-serif;
     font-size: 60px;
     color: rgb(244, 168, 26);
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 h1 {
     text-shadow: 15px 8px 20px rgba(0, 0, 0, 1);
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #canvas {
     background-color: black;
     border: 1px solid black;
+    width: 720px;
+    max-width: 90vw;
+    height: auto;
+}
+
+.controls-container {
+    width: 720px;
+    max-width: 90vw;
+    margin-top: 30px;
+    padding: 15px 25px;
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.controls-container h2 {
+    font-size: 1.6em;
+    color: rgb(244, 168, 26);
+    margin-bottom: 15px;
+    text-shadow: none;
+}
+
+.controls-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.controls-container li {
+    margin-bottom: 10px;
+}
+
+.key-symbol {
+    font-size: 2em;
+    font-weight: bold;
+    color: #c0392b;
+    display: inline-block;
+    min-width: 45px;
+    text-align: center;
+    vertical-align: middle;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 @font-face {
