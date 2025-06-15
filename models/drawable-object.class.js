@@ -26,7 +26,6 @@ class DrawableObject {
             const drawWidth = this.width - this.offset.left - this.offset.right;
             const drawHeight = this.height - this.offset.top - this.offset.bottom;
             ctx.rect(drawX, drawY, drawWidth, drawHeight);
-            ctx.stroke();
         } 
     }
 
