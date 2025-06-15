@@ -1,6 +1,8 @@
+let allLevels = [level1, level2, level3];
+
 class World {
     character = new Character();
-    level = level1;
+    level; 
     canvas;
     ctx;
     keyboard;
@@ -10,11 +12,16 @@ class World {
     statusBarCoins = new StatusBarCoins();
     throwableObjects = [];
     isGameOver = false;
+    currentLevelIndex = 0;
+    isGameWon = false;
+    lastBottleThrow = 0;
+    bottleCooldown = 1000;
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.level = allLevels[this.currentLevelIndex];
         this.draw();
         this.setWorld(); 
         this.run();
@@ -27,31 +34,48 @@ class World {
 
     run() {
         setInterval(() => {
-            if (!this.isGameOver) {
+            if (!this.isGameOver && !this.isGameWon) {
                 this.checkCollisions();
                 this.checkThrowObjects();
+                this.checkLevelCompletion(); 
             }
         }, 1000 / 60);
     }
 
     checkThrowObjects() {
-        if (this.keyboard.SPACE && this.character.bottles > 0 && !this.character.isDead() && !this.isGameOver) {
+        let timePassed = new Date().getTime() - this.lastBottleThrow;
+        if (this.keyboard.SPACE && this.character.bottles > 0 && !this.character.isDead() && !this.isGameOver && !this.isGameWon && timePassed > this.bottleCooldown) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
             this.throwableObjects.push(bottle);
             this.character.bottles--;
             this.statusBarBottles.setPercentage(this.character.bottles * 20);
+            this.lastBottleThrow = new Date().getTime();
         }
     }    
 
     checkCollisions() {
-        this.level.enemies.forEach((enemy) => {
+        this.level.enemies.forEach((enemy, enemyIndex) => {
             if( this.character.isColliding(enemy) ) {
+                if (enemy === this.level.endboss && this.level.endboss.energy === 0) {
+                    return; 
+                }
                 this.character.hit();
                 this.statusBar.setPercentage(this.character.energy);
                 if (this.character.isDead()) {
-                    this.endGame();
+                    this.endGame(); 
                 }
             }
+
+            this.throwableObjects.forEach((bottle, bottleIndex) => {
+                if (bottle.isColliding(enemy)) {
+                    enemy.hit();
+                    this.throwableObjects.splice(bottleIndex, 1); 
+                    if (enemy instanceof Chicken && enemy.isDead()) { 
+                        this.level.enemies.splice(enemyIndex, 1);
+                    } else if (enemy instanceof Endboss) {
+                    }
+                }
+            });
         });
 
         this.level.bottles.forEach((bottle, index) => {
@@ -66,18 +90,55 @@ class World {
             if (this.character.isColliding(coin)) {
                 this.character.coins++;
                 this.level.coins.splice(index, 1);
-                this.statusBarCoins.setPercentage(this.character.coins * 20);
+                let collectedCoinPercentage = (this.character.coins / this.level.initialCoinCount) * 100;
+                this.statusBarCoins.setPercentage(collectedCoinPercentage);
             }
         });
+    }
 
-        this.throwableObjects.forEach((bottle, bottleIndex) => {
-            this.level.enemies.forEach((enemy, enemyIndex) => {
-                if (bottle.isColliding(enemy)) {
-                    this.level.enemies.splice(enemyIndex, 1);
-                    this.throwableObjects.splice(bottleIndex, 1);
-                }
-            });
-        });
+    checkLevelCompletion() {
+        const allCoinsCollected = this.level.coins.length === 0;
+        const endbossDefeated = this.level.endboss.isDead();
+
+        if (allCoinsCollected && endbossDefeated) {
+            this.levelComplete();
+        }
+    }
+
+    levelComplete() {
+        if (this.currentLevelIndex < allLevels.length - 1) {
+            this.currentLevelIndex++;
+            this.showLevelCompleteScreen();
+        } else {
+            this.gameWon();
+        }
+    }
+
+    showLevelCompleteScreen() {
+        this.isGameOver = true; 
+        document.getElementById('levelCompleteScreen').classList.remove('d-none');
+        document.getElementById('canvas').classList.add('d-none');
+    }
+
+    goToNextLevel() {
+        this.isGameOver = false;
+        this.character.reset(); 
+        this.level = allLevels[this.currentLevelIndex]; 
+        this.statusBar.setPercentage(this.character.energy); 
+        this.statusBarBottles.setPercentage(this.character.bottles * 20);
+        this.statusBarCoins.setPercentage(0); 
+        this.throwableObjects = []; 
+        
+        document.getElementById('levelCompleteScreen').classList.add('d-none');
+        document.getElementById('canvas').classList.remove('d-none');
+        this.camera_x = 0; 
+    }
+
+    gameWon() {
+        this.isGameWon = true;
+        this.isGameOver = true; 
+        document.getElementById('gameWonScreen').classList.remove('d-none');
+        document.getElementById('canvas').classList.add('d-none');
     }
 
     endGame() {

@@ -5,9 +5,9 @@ class Character extends MovableObject {
     x = 20;
     speed = 5;
     energy = 100;
-    bottles = 0;
-    coins = 0;
     lastHit = 0;
+    bottles = 0; 
+    coins = 0; 
 
     offset = {
         top: 120,
@@ -76,7 +76,6 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
-        this.animate();
     }
 
     animate(){
@@ -84,18 +83,20 @@ class Character extends MovableObject {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD); 
             } else {
-                if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                    this.moveRight();
-                }
-                if (this.world.keyboard.LEFT && this.x > 0 ) {
-                    this.moveLeft();
-                }
+                if (this.world && this.world.keyboard) {
+                    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+                        this.moveRight();
+                    }
+                    if (this.world.keyboard.LEFT && this.x > 0 ) {
+                        this.moveLeft();
+                    }
 
-                if(this.world.keyboard.UP && !this.isAboveGround()) {
-                    this.jump();
-                }
+                    if(this.world.keyboard.UP && !this.isAboveGround()) {
+                        this.jump();
+                    }
 
-                this.world.camera_x = -this.x +100;
+                    this.world.camera_x = -this.x +100;
+                }
 
                 if(this.isHurt()){
                     this.playAnimation(this.IMAGES_HURT, 10); 
@@ -112,5 +113,16 @@ class Character extends MovableObject {
 
     jump() {
         this.speedY = 30;
+    }
+
+    reset() {
+        this.x = 20;
+        this.y = 175;
+        this.energy = 100;
+        this.bottles = 0;
+        this.coins = 0;
+        this.lastHit = 0;
+        this.speedY = 0;
+        this.img = this.imageCache[this.IMAGES_WALKING[0]];
     }
 }

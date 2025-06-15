@@ -38,12 +38,18 @@ function toggleFullscreen() {
 }
 
 function restartGame() {
-    location.reload();
+    location.reload(); 
+}
+
+function goToNextLevelFromButton() {
+    if (world) {
+        world.goToNextLevel();
+    }
 }
 
 
 window.addEventListener('keydown', (event) => {
-    if (!document.getElementById('canvas').classList.contains('d-none')) {
+    if (world && !world.isGameOver && !world.isGameWon) {
         if (event.keyCode == 39) { 
             keyboard.RIGHT = true;
         }
@@ -63,7 +69,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
-    if (!document.getElementById('canvas').classList.contains('d-none')) {
+    if (world && !world.isGameOver && !world.isGameWon) {
         if (event.keyCode == 39) {
             keyboard.RIGHT = false;
         }
