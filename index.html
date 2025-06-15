@@ -35,43 +35,58 @@
 </head>
 
 <body>
-    <h1>El Pollo Loco</h1>
+    <div class="game-wrapper">
+        <h1>El Pollo Loco</h1>
 
-    <div id="startScreen" class="start-screen">
-        <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startbildschirm">
-        <button onclick="startGame()">Spiel starten</button>
+        <div id="startScreen" class="start-screen">
+            <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startbildschirm">
+            <button onclick="startGame()">Spiel starten</button>
+        </div>
+
+        <canvas id="canvas" class="d-none">
+        </canvas>
+
+        <div id="gameOverScreen" class="game-over-screen d-none">
+            <img src="img/You won, you lost/Game Over.png" alt="Game Over">
+            <button onclick="restartGame()">Neues Spiel</button>
+        </div>
+
+        <div id="levelCompleteScreen" class="level-complete-screen d-none">
+            <img src="img/You won, you lost/You win.png" alt="Level Abgeschlossen">
+            <button onclick="goToNextLevelFromButton()">Nächstes Level</button>
+        </div>
+
+        <div id="gameWonScreen" class="game-won-screen d-none">
+            <img src="img/You won, you lost/You win.png" alt="Spiel Gewonnen">
+            <button onclick="restartGame()">Neues Spiel</button>
+        </div>
+
+        <div id="orientationMessage" class="orientation-message d-none">
+            <p>Bitte drehen Sie Ihr Gerät, um das Spiel im Querformat zu spielen!</p>
+        </div>
+
+        <div class="controls-container">
+            <h2>Steuerung</h2>
+            <ul>
+                <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
+                <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
+                <li><span class="key-symbol">&#x2191;</span> springen</li>
+                <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
+            </ul>
+            <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
+        </div>
+
+        <div class="mobile-controls-wrapper d-none">
+            <div class="mobile-controls-left">
+                <button id="btnLeft" class="mobile-btn">◀</button>
+                <button id="btnRight" class="mobile-btn">▶</button>
+                <button id="btnJump" class="mobile-btn">⬆</button>
+            </div>
+            <div class="mobile-controls-right">
+                <button id="btnThrow" class="mobile-btn">🍶</button>
+            </div>
+        </div>
     </div>
-
-    <canvas id="canvas" width="720" height="480" class="d-none">
-    </canvas>
-
-    <div id="gameOverScreen" class="game-over-screen d-none">
-        <img src="img/You won, you lost/Game Over.png" alt="Game Over">
-        <button onclick="restartGame()">Neues Spiel</button>
-    </div>
-
-    <div id="levelCompleteScreen" class="level-complete-screen d-none">
-        <img src="img/You won, you lost/You Win A.png" alt="Level Abgeschlossen">
-        <button onclick="goToNextLevelFromButton()">Nächstes Level</button>
-    </div>
-
-    <div id="gameWonScreen" class="game-won-screen d-none">
-        <img src="img/You won, you lost/You Win A.png" alt="Spiel Gewonnen">
-        <button onclick="restartGame()">Neues Spiel</button>
-    </div>
-
-
-    <div class="controls-container">
-        <h2>Steuerung</h2>
-        <ul>
-            <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
-            <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
-            <li><span class="key-symbol">&#x2191;</span> springen</li>
-            <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
-        </ul>
-        <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
-    </div>
-    
 </body>
 
 </html>

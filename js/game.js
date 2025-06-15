@@ -4,7 +4,10 @@ let keyboard = new Keyboard();
 
 function init(){
     canvas = document.getElementById('canvas');
+    resizeCanvas();
     world = new World(canvas, keyboard); 
+    addMobileEventListeners();
+    checkOrientation();
 }
 
 function startGame() {
@@ -47,6 +50,36 @@ function goToNextLevelFromButton() {
     }
 }
 
+function resizeCanvas() {
+    const aspectRatio = 720 / 480;
+    let newWidth = window.innerWidth * 0.9;
+    let newHeight = newWidth / aspectRatio;
+
+    if (newWidth > 720) {
+        newWidth = 720;
+        newHeight = 480;
+    }
+
+    if (newHeight > window.innerHeight * 0.7) {
+        newHeight = window.innerHeight * 0.7;
+        newWidth = newHeight * aspectRatio;
+    }
+
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+}
+
+window.addEventListener('resize', () => {
+    if (canvas) {
+        resizeCanvas();
+    }
+    checkOrientation();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkOrientation();
+});
+
 
 window.addEventListener('keydown', (event) => {
     if (world && !world.isGameOver && !world.isGameWon) {
@@ -87,3 +120,41 @@ window.addEventListener('keyup', (event) => {
         }
     }
 });
+
+function addMobileEventListeners() {
+    document.getElementById('btnLeft').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    }, { passive: false });
+    document.getElementById('btnLeft').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    }, { passive: false });
+
+    document.getElementById('btnRight').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    }, { passive: false });
+    document.getElementById('btnRight').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    }, { passive: false });
+
+    document.getElementById('btnJump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.UP = true;
+    }, { passive: false });
+    document.getElementById('btnJump').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.UP = false;
+    }, { passive: false });
+
+    document.getElementById('btnThrow').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    }, { passive: false });
+    document.getElementById('btnThrow').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    }, { passive: false });
+}
