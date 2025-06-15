@@ -1,21 +1,21 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let keyboard = new Keyboard(); 
 
 function init(){
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
+    world = new World(canvas, keyboard); 
 }
 
 function toggleFullscreen() {
-    let canvas = document.getElementById('canvas');
+    let canvas = document.getElementById('canvas'); 
 
-    if (!document.fullscreenElement) {
+    if (!document.fullscreenElement) { 
         if (canvas.requestFullscreen) {
             canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) {
+        } else if (canvas.webkitRequestFullscreen) { 
             canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) {
+        } else if (canvas.msRequestFullscreen) { 
             canvas.msRequestFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Fenstermodus';
@@ -31,6 +31,10 @@ function toggleFullscreen() {
     }
 }
 
+function restartGame() {
+    location.reload();
+}
+
 window.addEventListener('keydown', (event) => {
     if (event.keyCode == 39) { 
         keyboard.RIGHT = true;
@@ -41,7 +45,7 @@ window.addEventListener('keydown', (event) => {
     if (event.keyCode == 38) { 
         keyboard.UP = true;
     }
-    if (event.keyCode == 40) {
+    if (event.keyCode == 40) { 
         keyboard.DOWN = true;
     }
     if (event.keyCode == 32) { 

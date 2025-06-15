@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"  href="./style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/vnd.icon" href="./img/6_salsa_bottle/salsa_bottle.png">
     <title>El Pollo Loco</title>
 
@@ -19,12 +18,12 @@
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
+    <script src="models/endboss.class.js"></script>
     <script src="models/bottle-class.js"></script>
     <script src="models/coin.class.js"></script>
     <script src="models/status-bar-bottles.class.js"></script>
     <script src="models/status-bar-coins.class.js"></script>
-    <script src="models/endboss.class.js"></script>
-    <script src="levels/level1.js"></script>    
+    <script src="levels/level1.js"></script>    
     <script src="js/game.js"></script>
 </head>
 
@@ -32,20 +31,24 @@
 
     <h1>El Pollo Loco</h1>
 
-
     <canvas id="canvas" width="720" height="480">
-
     </canvas>
 
-<div class="controls-container">
-    <h2>Steuerung</h2>
-    <ul>
-        <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
-        <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
-        <li><span class="key-symbol">&#x2191;</span> springen</li>
-        <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
-    </ul>
-    <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button> </div>
+    <div id="gameOverScreen" class="game-over-screen d-none">
+        <img src="img/You won, you lost/Game Over.png" alt="Game Over">
+        <button onclick="restartGame()">Neues Spiel</button>
+    </div>
+
+    <div class="controls-container">
+        <h2>Steuerung</h2>
+        <ul>
+            <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
+            <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
+            <li><span class="key-symbol">&#x2191;</span> springen</li>
+            <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
+        </ul>
+        <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
+    </div>
     
 </body>
 

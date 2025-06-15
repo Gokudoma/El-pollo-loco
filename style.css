@@ -84,3 +84,47 @@ h1 {
     font-weight: bold;
     src: url("./fonts/flyingbubble.otf") format("opentype");
 }
+
+.game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.game-over-screen img {
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.game-over-screen button {
+    padding: 15px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.game-over-screen button:hover {
+    background-color: #c0392b;
+}
+
+.d-none {
+    display: none;
+}
+
+canvas.d-none {
+    display: none;
+}

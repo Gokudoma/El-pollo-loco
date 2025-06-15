@@ -9,13 +9,14 @@ class World {
     statusBarBottles = new StatusBarBottles();
     statusBarCoins = new StatusBarCoins();
     throwableObjects = [];
+    isGameOver = false;
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.draw();
-        this.setWorld();
+        this.setWorld(); 
         this.run();
         this.character.animate(); 
     }
@@ -26,13 +27,15 @@ class World {
 
     run() {
         setInterval(() => {
-            this.checkCollisions();
-            this.checkThrowObjects();
+            if (!this.isGameOver) {
+                this.checkCollisions();
+                this.checkThrowObjects();
+            }
         }, 1000 / 60);
     }
 
     checkThrowObjects() {
-        if (this.keyboard.SPACE && this.character.bottles > 0) {
+        if (this.keyboard.SPACE && this.character.bottles > 0 && !this.character.isDead() && !this.isGameOver) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
             this.throwableObjects.push(bottle);
             this.character.bottles--;
@@ -45,6 +48,9 @@ class World {
             if( this.character.isColliding(enemy) ) {
                 this.character.hit();
                 this.statusBar.setPercentage(this.character.energy);
+                if (this.character.isDead()) {
+                    this.endGame();
+                }
             }
         });
 
@@ -69,10 +75,15 @@ class World {
                 if (bottle.isColliding(enemy)) {
                     this.level.enemies.splice(enemyIndex, 1);
                     this.throwableObjects.splice(bottleIndex, 1);
-                    // Optional: Punkte hinzufügen, Sound abspielen
                 }
             });
         });
+    }
+
+    endGame() {
+        this.isGameOver = true;
+        document.getElementById('gameOverScreen').classList.remove('d-none');
+        document.getElementById('canvas').classList.add('d-none');
     }
 
     draw() {
