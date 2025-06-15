@@ -2,53 +2,67 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
-function init() {
-  canvas = document.getElementById("canvas");
-  world = new World(canvas);
-
-  console.log("My Character is", world.character);
+function init(){
+    canvas = document.getElementById('canvas');
+    world = new World(canvas, keyboard);
 }
 
-window.addEventListener("keydown", (e) => {
-  if (e.keyCode == 39) {
-    keyboard.RIGHT = true;
-  }
+function toggleFullscreen() {
+    let canvas = document.getElementById('canvas');
 
-  if (e.keyCode == 37) {
-    keyboard.LEFT = true;
-  }
+    if (!document.fullscreenElement) {
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen();
+        } else if (canvas.webkitRequestFullscreen) {
+            canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) {
+            canvas.msRequestFullscreen();
+        }
+        document.getElementById('fullscreenBtn').innerText = 'Fenstermodus';
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { 
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { 
+            document.msExitFullscreen();
+        }
+        document.getElementById('fullscreenBtn').innerText = 'Vollbild';
+    }
+}
 
-  if (e.keyCode == 38) {
-    keyboard.UP = true;
-  }
-
-  if (e.keyCode == 40) {
-    keyboard.DOWN = true;
-  }
-
-  if (e.keyCode == 32) {
-    keyboard.SPACE = true;
-  }
+window.addEventListener('keydown', (event) => {
+    if (event.keyCode == 39) { 
+        keyboard.RIGHT = true;
+    }
+    if (event.keyCode == 37) { 
+        keyboard.LEFT = true;
+    }
+    if (event.keyCode == 38) { 
+        keyboard.UP = true;
+    }
+    if (event.keyCode == 40) {
+        keyboard.DOWN = true;
+    }
+    if (event.keyCode == 32) { 
+        keyboard.SPACE = true;
+    }
 });
 
-window.addEventListener("keyup", (e) => {
-  if (e.keyCode == 39) {
-    keyboard.RIGHT = false;
-  }
-
-  if (e.keyCode == 37) {
-    keyboard.LEFT = false;
-  }
-
-  if (e.keyCode == 38) {
-    keyboard.UP = false;
-  }
-
-  if (e.keyCode == 40) {
-    keyboard.DOWN = false;
-  }
-
-  if (e.keyCode == 32) {
-    keyboard.SPACE = false;
-  }
+window.addEventListener('keyup', (event) => {
+    if (event.keyCode == 39) {
+        keyboard.RIGHT = false;
+    }
+    if (event.keyCode == 37) {
+        keyboard.LEFT = false;
+    }
+    if (event.keyCode == 38) {
+        keyboard.UP = false;
+    }
+    if (event.keyCode == 40) {
+        keyboard.DOWN = false;
+    }
+    if (event.keyCode == 32) {
+        keyboard.SPACE = false;
+    }
 });

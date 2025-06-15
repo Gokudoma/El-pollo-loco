@@ -5,6 +5,8 @@ class Character extends MovableObject {
     x = 20;
     speed = 5;
     energy = 100;
+    bottles = 0;
+    coins = 0;
     lastHit = 0;
 
     offset = {
