@@ -20,6 +20,8 @@ class World {
     bossSoundPlayed = false;
     levelSound = new Audio('audio/levelsound.mp3');
     levelSoundPlaying = false;
+    chickenSound = new Audio('audio/chicken.mp3'); 
+    chickenSoundPlaying = false; 
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
@@ -31,7 +33,8 @@ class World {
         this.run();
         this.character.animate(); 
         this.startCleanupIntervals();
-        this.levelSound.loop = true;
+        this.levelSound.loop = true; 
+        this.chickenSound.loop = true; 
     }
 
     setWorld(){
@@ -49,6 +52,7 @@ class World {
                 this.checkCollisions();
                 this.checkThrowObjects();
                 this.checkLevelCompletion(); 
+                this.checkEnemyProximity(); 
             }
         }, 1000 / 60);
     }
@@ -114,6 +118,25 @@ class World {
         });
     }
 
+    checkEnemyProximity() {
+        let foundProximityEnemy = false;
+        this.level.enemies.forEach(enemy => {
+            const distance = enemy.x - this.character.x;
+            if (distance > -120 && distance < 720 && !enemy.isDead()) {
+                foundProximityEnemy = true;
+            }
+        });
+
+        if (foundProximityEnemy && !this.chickenSoundPlaying) {
+            this.chickenSound.play();
+            this.chickenSoundPlaying = true;
+        } else if (!foundProximityEnemy && this.chickenSoundPlaying) {
+            this.chickenSound.pause();
+            this.chickenSound.currentTime = 0; 
+            this.chickenSoundPlaying = false;
+        }
+    }
+
     cleanupDeadEnemies() {
         this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDead());
     }
@@ -142,7 +165,10 @@ class World {
 
     showLevelCompleteScreen() {
         this.isGameOver = true; 
-        this.levelSound.pause();
+        this.levelSound.pause(); 
+        this.chickenSound.pause();
+        this.chickenSound.currentTime = 0;
+        this.chickenSoundPlaying = false;
         document.getElementById('levelCompleteScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }
@@ -161,7 +187,7 @@ class World {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
         this.camera_x = 0; 
-        if (!this.levelSoundPlaying) {
+        if (!this.levelSoundPlaying) { 
             this.levelSound.play();
             this.levelSoundPlaying = true;
         }
@@ -170,14 +196,20 @@ class World {
     gameWon() {
         this.isGameWon = true;
         this.isGameOver = true; 
-        this.levelSound.pause();
+        this.levelSound.pause(); 
+        this.chickenSound.pause();
+        this.chickenSound.currentTime = 0;
+        this.chickenSoundPlaying = false;
         document.getElementById('gameWonScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }
 
     endGame() {
         this.isGameOver = true;
-        this.levelSound.pause();
+        this.levelSound.pause(); 
+        this.chickenSound.pause();
+        this.chickenSound.currentTime = 0;
+        this.chickenSoundPlaying = false;
         document.getElementById('gameOverScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }

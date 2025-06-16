@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard(); 
+let isMutedGlobally = false;
 
 function resetKeyboardState() {
     keyboard.RIGHT = false;
@@ -55,6 +56,7 @@ function init(){
     resizeCanvas();
     world = new World(canvas, keyboard); 
     addMobileEventListeners();
+    updateMuteButton();
 }
 
 function startGame() {
@@ -85,6 +87,30 @@ function toggleFullscreen() {
             document.msExitFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Vollbild';
+    }
+}
+
+function toggleMute() {
+    isMutedGlobally = !isMutedGlobally;
+    
+    if (world) {
+        world.levelSound.muted = isMutedGlobally;
+        world.chickenSound.muted = isMutedGlobally;
+        world.chickenBossDieSound.muted = isMutedGlobally;
+
+        if (world.character) {
+            world.character.jumpSound.muted = isMutedGlobally;
+            world.character.hitSound.muted = isMutedGlobally;
+            world.character.deathSound.muted = isMutedGlobally;
+        }
+    }
+    updateMuteButton();
+}
+
+function updateMuteButton() {
+    const muteBtn = document.getElementById('muteBtn');
+    if (muteBtn) {
+        muteBtn.innerText = isMutedGlobally ? 'Sound An' : 'Sound Mute';
     }
 }
 
