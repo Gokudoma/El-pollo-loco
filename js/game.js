@@ -65,23 +65,23 @@ function startGame() {
 }
 
 function toggleFullscreen() {
-    let canvas = document.getElementById('canvas'); 
+    let gameWrapper = document.querySelector('.game-wrapper');
 
     if (!document.fullscreenElement) { 
-        if (canvas.requestFullscreen) {
-            canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { 
-            canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) { 
-            canvas.msRequestFullscreen();
+        if (gameWrapper.requestFullscreen) {
+            gameWrapper.requestFullscreen();
+        } else if (gameWrapper.webkitRequestFullscreen) {
+            gameWrapper.webkitRequestFullscreen();
+        } else if (gameWrapper.msRequestFullscreen) {
+            gameWrapper.msRequestFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Fenstermodus';
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { 
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { 
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Vollbild';
@@ -148,7 +148,12 @@ window.addEventListener('keydown', (event) => {
         }
         if (event.keyCode == 32) { 
             keyboard.SPACE = true;
+            event.preventDefault(); 
         }
+    }
+    if (event.keyCode == 13) { 
+        toggleFullscreen();
+        event.preventDefault();
     }
 });
 
