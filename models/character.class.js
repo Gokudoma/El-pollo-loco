@@ -67,6 +67,9 @@ class Character extends MovableObject {
     ]
 
     world;
+    hitSound = new Audio('audio/hit.mp3');
+    deathSound = new Audio('audio/death.mp3');
+    deathSoundPlayed = false;
 
     constructor(){
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -81,7 +84,11 @@ class Character extends MovableObject {
     animate(){
         setInterval(() => {
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD); 
+                this.playAnimation(this.IMAGES_DEAD);
+                if (!this.deathSoundPlayed) {
+                    this.deathSound.play();
+                    this.deathSoundPlayed = true;
+                }
             } else {
                 if (this.world && this.world.keyboard) {
                     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -115,6 +122,16 @@ class Character extends MovableObject {
         this.speedY = 30;
     }
 
+    hit() {
+        this.energy -= 5;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+            this.hitSound.play();
+        }
+    }
+
     reset() {
         this.x = 20;
         this.y = 175;
@@ -124,5 +141,6 @@ class Character extends MovableObject {
         this.lastHit = 0;
         this.speedY = 0;
         this.img = this.imageCache[this.IMAGES_WALKING[0]];
+        this.deathSoundPlayed = false;
     }
 }
