@@ -70,6 +70,7 @@ class Character extends MovableObject {
     hitSound = new Audio('audio/hit.mp3');
     deathSound = new Audio('audio/death.mp3');
     deathSoundPlayed = false;
+    jumpSound = new Audio('audio/jump.mp3');
 
     constructor(){
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -119,7 +120,10 @@ class Character extends MovableObject {
     }
 
     jump() {
-        this.speedY = 30;
+        if (!this.isAboveGround()) { 
+            this.speedY = 30;
+            this.jumpSound.play();
+        }
     }
 
     hit() {

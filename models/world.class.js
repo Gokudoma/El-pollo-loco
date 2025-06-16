@@ -18,6 +18,8 @@ class World {
     bottleCooldown = 1000;
     chickenBossDieSound = new Audio('audio/chickenBossdies.mp3');
     bossSoundPlayed = false;
+    levelSound = new Audio('audio/levelsound.mp3');
+    levelSoundPlaying = false;
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
@@ -29,6 +31,7 @@ class World {
         this.run();
         this.character.animate(); 
         this.startCleanupIntervals();
+        this.levelSound.loop = true;
     }
 
     setWorld(){
@@ -139,6 +142,7 @@ class World {
 
     showLevelCompleteScreen() {
         this.isGameOver = true; 
+        this.levelSound.pause();
         document.getElementById('levelCompleteScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }
@@ -157,17 +161,23 @@ class World {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
         this.camera_x = 0; 
+        if (!this.levelSoundPlaying) {
+            this.levelSound.play();
+            this.levelSoundPlaying = true;
+        }
     }
 
     gameWon() {
         this.isGameWon = true;
         this.isGameOver = true; 
+        this.levelSound.pause();
         document.getElementById('gameWonScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }
 
     endGame() {
         this.isGameOver = true;
+        this.levelSound.pause();
         document.getElementById('gameOverScreen').classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
     }
