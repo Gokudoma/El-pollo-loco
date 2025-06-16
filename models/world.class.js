@@ -22,6 +22,7 @@ class World {
     levelSoundPlaying = false;
     chickenSound = new Audio('audio/chicken.mp3'); 
     chickenSoundPlaying = false; 
+    brokenBottleSound = new Audio('audio/brokenBottle.mp3'); 
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
@@ -92,6 +93,10 @@ class World {
                 if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
                     bottle.splash(); 
                     enemy.hit(); 
+                    this.brokenBottleSound.currentTime = 0; 
+                    if (!isMutedGlobally) { 
+                        this.brokenBottleSound.play();
+                    }
                     if (enemy instanceof Endboss && enemy.isDead() && !this.bossSoundPlayed) {
                         this.chickenBossDieSound.play();
                         this.bossSoundPlayed = true;
@@ -122,15 +127,15 @@ class World {
         let foundProximityEnemy = false;
         this.level.enemies.forEach(enemy => {
             const distance = enemy.x - this.character.x;
-            if (distance > -120 && distance < 720 && !enemy.isDead()) {
+            if (distance > -30 && distance < 720 && !enemy.isDead()) {
                 foundProximityEnemy = true;
             }
         });
 
-        if (foundProximityEnemy && !this.chickenSoundPlaying) {
+        if (foundProximityEnemy && !this.chickenSoundPlaying && !isMutedGlobally) {
             this.chickenSound.play();
             this.chickenSoundPlaying = true;
-        } else if (!foundProximityEnemy && this.chickenSoundPlaying) {
+        } else if ((!foundProximityEnemy && this.chickenSoundPlaying) || isMutedGlobally && this.chickenSoundPlaying) {
             this.chickenSound.pause();
             this.chickenSound.currentTime = 0; 
             this.chickenSoundPlaying = false;
@@ -187,7 +192,7 @@ class World {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
         this.camera_x = 0; 
-        if (!this.levelSoundPlaying) { 
+        if (!this.levelSoundPlaying && !isMutedGlobally) { 
             this.levelSound.play();
             this.levelSoundPlaying = true;
         }
