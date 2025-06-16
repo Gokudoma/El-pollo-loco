@@ -30,6 +30,11 @@ class World {
 
     setWorld(){
         this.character.world = this;
+        this.level.enemies.forEach(enemy => {
+            if (enemy instanceof MovableObject) {
+                enemy.setWorld(this);
+            }
+        });
     }
 
     run() {
@@ -46,6 +51,7 @@ class World {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
         if (this.keyboard.SPACE && this.character.bottles > 0 && !this.character.isDead() && !this.isGameOver && !this.isGameWon && timePassed > this.bottleCooldown) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+            bottle.setWorld(this);
             this.throwableObjects.push(bottle);
             this.character.bottles--;
             this.statusBarBottles.setPercentage(this.character.bottles * 20);
@@ -124,6 +130,7 @@ class World {
         this.isGameOver = false;
         this.character.reset(); 
         this.level = allLevels[this.currentLevelIndex]; 
+        this.setWorld();
         this.statusBar.setPercentage(this.character.energy); 
         this.statusBarBottles.setPercentage(this.character.bottles * 20);
         this.statusBarCoins.setPercentage(0); 

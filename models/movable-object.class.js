@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     animationFrameSkip = 0;
     animationSkipThreshold = 7;
+    world = null;
 
     offset = {
         top: 0,
@@ -101,5 +102,9 @@ class MovableObject extends DrawableObject {
     moveLeft() {
         this.x -= this.speed;
         this.otherDirection = true;
+    }
+
+    setWorld(world) {
+        this.world = world;
     }
 }
