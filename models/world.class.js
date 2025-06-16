@@ -26,6 +26,7 @@ class World {
         this.setWorld(); 
         this.run();
         this.character.animate(); 
+        this.startCleanupIntervals();
     }
 
     setWorld(){
@@ -47,6 +48,15 @@ class World {
         }, 1000 / 60);
     }
 
+    startCleanupIntervals() {
+        setInterval(() => {
+            if (!this.isGameOver && !this.isGameWon) {
+                this.cleanupDeadEnemies();
+                this.cleanupSplashedBottles();
+            }
+        }, 100); 
+    }
+
     checkThrowObjects() {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
         if (this.keyboard.SPACE && this.character.bottles > 0 && !this.character.isDead() && !this.isGameOver && !this.isGameWon && timePassed > this.bottleCooldown) {
@@ -60,11 +70,8 @@ class World {
     }    
 
     checkCollisions() {
-        this.level.enemies.forEach((enemy, enemyIndex) => {
-            if( this.character.isColliding(enemy) ) {
-                if (enemy === this.level.endboss && this.level.endboss.energy === 0) {
-                    return; 
-                }
+        this.level.enemies.forEach((enemy) => {
+            if( this.character.isColliding(enemy) && !enemy.isDead()) {
                 this.character.hit();
                 this.statusBar.setPercentage(this.character.energy);
                 if (this.character.isDead()) {
@@ -72,14 +79,10 @@ class World {
                 }
             }
 
-            this.throwableObjects.forEach((bottle, bottleIndex) => {
-                if (bottle.isColliding(enemy)) {
-                    enemy.hit();
-                    this.throwableObjects.splice(bottleIndex, 1); 
-                    if (enemy instanceof Chicken && enemy.isDead()) { 
-                        this.level.enemies.splice(enemyIndex, 1);
-                    } else if (enemy instanceof Endboss) {
-                    }
+            this.throwableObjects.forEach((bottle) => {
+                if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
+                    bottle.splash(); 
+                    enemy.hit(); 
                 }
             });
         });
@@ -100,6 +103,14 @@ class World {
                 this.statusBarCoins.setPercentage(collectedCoinPercentage);
             }
         });
+    }
+
+    cleanupDeadEnemies() {
+        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDead());
+    }
+
+    cleanupSplashedBottles() {
+        this.throwableObjects = this.throwableObjects.filter(bottle => !bottle.splashAnimationFinished);
     }
 
     checkLevelCompletion() {
