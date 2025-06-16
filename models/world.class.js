@@ -16,6 +16,8 @@ class World {
     isGameWon = false;
     lastBottleThrow = 0;
     bottleCooldown = 1000;
+    chickenBossDieSound = new Audio('audio/chickenBossdies.mp3');
+    bossSoundPlayed = false;
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
@@ -83,6 +85,10 @@ class World {
                 if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
                     bottle.splash(); 
                     enemy.hit(); 
+                    if (enemy instanceof Endboss && enemy.isDead() && !this.bossSoundPlayed) {
+                        this.chickenBossDieSound.play();
+                        this.bossSoundPlayed = true;
+                    }
                 }
             });
         });
@@ -146,6 +152,7 @@ class World {
         this.statusBarBottles.setPercentage(this.character.bottles * 20);
         this.statusBarCoins.setPercentage(0); 
         this.throwableObjects = []; 
+        this.bossSoundPlayed = false;
         
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
