@@ -1,26 +1,28 @@
 const level3Endboss = new Endboss();
 const level3Coins = [
-    new Coin(2500, 100),
-    new Coin(2600, 150),
-    new Coin(2700, 100),
-    new Coin(2800, 150),
-    new Coin(2900, 100),
-    new Coin(3000, 150),
-    new Coin(3100, 100),
-    new Coin(3200, 150),
+    new Coin(400, 100),
+    new Coin(700, 150),
+    new Coin(800, 100),
+    new Coin(950, 150),
+    new Coin(1100, 100),
+    new Coin(1500, 150),
+    new Coin(1650, 100),
+    new Coin(2000, 150),
 ];
 const level3Bottles = [
-    new Bottle(2650, 360),
-    new Bottle(2850, 360),
-    new Bottle(3050, 360),
+    new Bottle(1000, 360),
+    new Bottle(1300, 360),
+    new Bottle(1600, 360),
+    new Bottle(1900, 360),
+    new Bottle(2200, 360)
 ];
 
 const level3 = new Level(
     [
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
+        new Chicken(2500, 360),
+        new Chicken(2700, 360),
+        new Chicken(2900, 360),
+        new Chicken(3200, 360),
         level3Endboss,
     ],
     [

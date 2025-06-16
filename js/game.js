@@ -2,18 +2,66 @@ let canvas;
 let world;
 let keyboard = new Keyboard(); 
 
+function resetKeyboardState() {
+    keyboard.RIGHT = false;
+    keyboard.LEFT = false;
+    keyboard.UP = false;
+    keyboard.DOWN = false;
+    keyboard.SPACE = false;
+}
+
+function checkOrientation() {
+    const orientationMessage = document.getElementById('orientationMessage');
+    const canvasElement = document.getElementById('canvas');
+    const mobileControls = document.querySelector('.mobile-controls-wrapper');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const levelCompleteScreen = document.getElementById('levelCompleteScreen');
+    const gameWonScreen = document.getElementById('gameWonScreen');
+
+    if (window.innerWidth <= 770 && window.innerHeight > window.innerWidth) {
+        orientationMessage.classList.remove('d-none');
+        canvasElement.classList.add('d-none');
+        mobileControls.classList.add('d-none');
+        startScreen.classList.add('d-none');
+        gameOverScreen.classList.add('d-none');
+        levelCompleteScreen.classList.add('d-none');
+        gameWonScreen.classList.add('d-none');
+    } else {
+        orientationMessage.classList.add('d-none');
+
+        const gameActive = startScreen.classList.contains('d-none') && 
+                           gameOverScreen.classList.contains('d-none') &&
+                           levelCompleteScreen.classList.contains('d-none') &&
+                           gameWonScreen.classList.contains('d-none');
+
+        if (gameActive) {
+            canvasElement.classList.remove('d-none');
+            if (window.innerWidth <= 769) {
+                mobileControls.classList.remove('d-none');
+            } else {
+                mobileControls.classList.add('d-none');
+            }
+        } else {
+            canvasElement.classList.add('d-none');
+            mobileControls.classList.add('d-none');
+        }
+    }
+}
+
+
 function init(){
     canvas = document.getElementById('canvas');
     resizeCanvas();
     world = new World(canvas, keyboard); 
     addMobileEventListeners();
-    checkOrientation();
 }
 
 function startGame() {
     document.getElementById('startScreen').classList.add('d-none');
-    document.getElementById('canvas').classList.remove('d-none');
     init();
+    resetKeyboardState();
+    checkOrientation();
 }
 
 function toggleFullscreen() {
@@ -42,11 +90,13 @@ function toggleFullscreen() {
 
 function restartGame() {
     location.reload(); 
+    resetKeyboardState();
 }
 
 function goToNextLevelFromButton() {
     if (world) {
         world.goToNextLevel();
+        resetKeyboardState();
     }
 }
 
@@ -69,6 +119,7 @@ function resizeCanvas() {
     canvas.height = newHeight;
 }
 
+
 window.addEventListener('resize', () => {
     if (canvas) {
         resizeCanvas();
@@ -76,7 +127,7 @@ window.addEventListener('resize', () => {
     checkOrientation();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', () => {
     checkOrientation();
 });
 

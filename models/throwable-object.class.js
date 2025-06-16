@@ -46,10 +46,10 @@ class ThrowableObject extends MovableObject {
     }
 
     splash() {
+        console.log('Bottle is splashing!'); // Debug-Ausgabe
         this.isSplashing = true;
         clearInterval(this.throwInterval);
-        clearInterval(this.gravityInterval);
-
+        
         this.currentImage = 0;
         this.splashInterval = setInterval(() => {
             if (this.currentImage < this.IMAGES_SPLASH.length) {

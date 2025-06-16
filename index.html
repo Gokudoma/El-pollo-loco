@@ -30,8 +30,6 @@
     <script src="levels/level3.js"></script>
 
     <script src="models/world.class.js"></script>
-
-    <script src="js/game.js"></script>
 </head>
 
 <body>
@@ -47,17 +45,17 @@
         </canvas>
 
         <div id="gameOverScreen" class="game-over-screen d-none">
-            <img src="img/You won, you lost/Game Over.png" alt="Game Over">
+            <img src="img/You won, you lost/Game over A.png" alt="Game Over">
             <button onclick="restartGame()">Neues Spiel</button>
         </div>
 
         <div id="levelCompleteScreen" class="level-complete-screen d-none">
-            <img src="img/You won, you lost/You win.png" alt="Level Abgeschlossen">
+            <img src="img/You won, you lost/You Win A.png" alt="Level Abgeschlossen">
             <button onclick="goToNextLevelFromButton()">Nächstes Level</button>
         </div>
 
         <div id="gameWonScreen" class="game-won-screen d-none">
-            <img src="img/You won, you lost/You win.png" alt="Spiel Gewonnen">
+            <img src="img/You won, you lost/You won A.png" alt="Spiel Gewonnen">
             <button onclick="restartGame()">Neues Spiel</button>
         </div>
 
@@ -87,6 +85,7 @@
             </div>
         </div>
     </div>
+    <script src="js/game.js"></script>
 </body>
 
 </html>
