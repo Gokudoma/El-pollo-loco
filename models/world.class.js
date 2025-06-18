@@ -23,6 +23,7 @@ class World {
     chickenSound = new Audio('audio/chicken.mp3'); 
     chickenSoundPlaying = false; 
     brokenBottleSound = new Audio('audio/brokenBottle.mp3'); 
+    gamePaused = false;
 
     constructor(canvas){
         this.ctx = canvas.getContext('2d');
@@ -49,7 +50,7 @@ class World {
 
     run() {
         setInterval(() => {
-            if (!this.isGameOver && !this.isGameWon) {
+            if (!this.isGameOver && !this.isGameWon && !this.gamePaused) {
                 this.checkCollisions();
                 this.checkThrowObjects();
                 this.checkLevelCompletion(); 
@@ -60,7 +61,7 @@ class World {
 
     startCleanupIntervals() {
         setInterval(() => {
-            if (!this.isGameOver && !this.isGameWon) {
+            if (!this.isGameOver && !this.isGameWon && !this.gamePaused) {
                 this.cleanupDeadEnemies();
                 this.cleanupSplashedBottles();
             }

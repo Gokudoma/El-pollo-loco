@@ -31,12 +31,11 @@
 
     <script src="models/world.class.js"></script>
 
-    <script src="js/game.js"></script>
 </head>
 
 <body>
     <div class="game-wrapper">
-        <h1>El Pollo Loco</h1>
+        <h1 class="d-none">El Pollo Loco</h1>
 
         <div id="startScreen" class="start-screen">
             <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startbildschirm">
@@ -66,15 +65,9 @@
         </div>
 
         <div class="controls-container">
-            <h2>Steuerung</h2>
-            <ul>
-                <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
-                <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
-                <li><span class="key-symbol">&#x2191;</span> springen</li>
-                <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
-            </ul>
             <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
             <button onclick="toggleMute()" id="muteBtn">Sound Mute</button>
+            <button onclick="toggleExplanationModal()" id="explanationBtn">Erklärung</button>
         </div>
 
         <div class="mobile-controls-wrapper d-none">
@@ -84,11 +77,29 @@
                 <button id="btnJump" class="mobile-btn">⬆</button>
             </div>
             <div class="mobile-controls-right">
+                <button onclick="toggleExplanationModal()" id="explanationMobileBtn" class="mobile-btn explanation-button">?</button>
                 <button id="btnThrow" class="mobile-btn">🍶</button>
             </div>
         </div>
+
+        <div id="explanationModal" class="explanation-modal d-none">
+            <div class="explanation-modal-content">
+                <span class="close-button" onclick="toggleExplanationModal()">&times;</span>
+                <h2>Steuerung & Ziele</h2>
+                <h3>Steuerung:</h3>
+                <ul>
+                    <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
+                    <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
+                    <li><span class="key-symbol">&#x2191;</span> springen</li>
+                    <li><span class="key-symbol">&#x2423;</span> Flasche werfen</li>
+                    <li><span class="key-symbol">ENTER</span> Vollbild an/aus</li>
+                </ul>
+                <h3>Spielziele:</h3>
+                <p>Sammle in jedem Level alle Münzen, und besiege den Endboss! Tipp: es werden alle Flaschen für den Boss benötigt!</p>
+            </div>
+        </div>
+
     </div>
     <script src="js/game.js"></script>
 </body>
-
 </html>

@@ -10,6 +10,10 @@
 }
 
 html, body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
 }
 
@@ -18,9 +22,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
     background-image: url('img/body_background/body_background.png');
     background-size: cover;
     background-position: center;
@@ -28,8 +29,6 @@ body {
     font-family: 'flyingbubble', Arial, Helvetica, sans-serif;
     font-size: 60px;
     color: rgb(244, 168, 26);
-    height: 100vh;
-    width: 100vw;
 }
 
 * {
@@ -37,13 +36,18 @@ body {
 }
 
 .game-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 100vw;
-    padding: 20px;
+    padding: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 h1 {
@@ -52,7 +56,8 @@ h1 {
     margin-bottom: 20px;
     text-align: center;
     text-shadow: 15px 8px 20px rgba(0, 0, 0, 1);
-    margin-top: 20px;
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 
 canvas {
@@ -62,11 +67,25 @@ canvas {
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     width: 100%;
-    height: auto;
+    height: 100%;
     max-width: 720px;
     max-height: 480px;
     touch-action: manipulation;
+    object-fit: contain;
+    flex-shrink: 0;
 }
+
+.game-wrapper.fullscreen-active {
+    padding: 0;
+}
+
+.game-wrapper.fullscreen-active canvas {
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 
 .controls-container {
     width: 720px;
@@ -140,7 +159,7 @@ button:active {
 .start-screen,
 .level-complete-screen,
 .game-won-screen {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -148,7 +167,7 @@ button:active {
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     z-index: 101;
     text-align: center;
@@ -159,8 +178,9 @@ button:active {
 .level-complete-screen img,
 .game-won-screen img {
     max-width: 90%;
+    max-height: 50vh;
     height: auto;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
@@ -221,7 +241,7 @@ button:active {
     align-items: flex-end;
     padding: 0 10px;
     box-sizing: border-box;
-    z-index: 99;
+    z-index: 100;
 }
 
 .mobile-controls-left,
@@ -275,6 +295,97 @@ button:active {
     max-width: 80%;
 }
 
+.explanation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+.explanation-modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: #333;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.explanation-modal-content h2,
+.explanation-modal-content h3 {
+    color: rgb(244, 168, 26);
+    margin-bottom: 15px;
+    text-shadow: none;
+    font-size: 1.8em;
+}
+
+.explanation-modal-content h3 {
+    font-size: 1.4em;
+    margin-top: 20px;
+}
+
+.explanation-modal-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.explanation-modal-content li {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explanation-modal-content .key-symbol {
+    font-size: 1.5em;
+    margin-right: 10px;
+    color: #c0392b;
+}
+
+.explanation-modal-content p {
+    font-size: 1.1em;
+    color: #666;
+    line-height: 1.5;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+}
+
+.explanation-button {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 2.5em !important;
+    padding: 0 !important;
+    min-width: unset !important;
+}
 
 @media (max-width: 769px) {
     .controls-container {
@@ -286,6 +397,19 @@ button:active {
     h1 {
         font-size: 2em;
     }
+    .explanation-modal-content h2 {
+        font-size: 1.6em;
+    }
+    .explanation-modal-content h3 {
+        font-size: 1.2em;
+    }
+    .explanation-modal-content .key-symbol {
+        font-size: 1.2em;
+    }
+    .explanation-modal-content p,
+    .explanation-modal-content li {
+        font-size: 1em;
+    }
 }
 
 @media (max-width: 770px) and (orientation: portrait) {
@@ -296,13 +420,69 @@ button:active {
     .orientation-message {
         display: flex !important;
     }
+    .controls-container {
+        display: none !important;
+    }
+    .start-screen,
+    .game-over-screen,
+    .level-complete-screen,
+    .game-won-screen,
+    .explanation-modal {
+        display: none !important;
+    }
+}
+
+@media (max-height: 600px) {
+    .game-over-screen img,
+    .start-screen img,
+    .level-complete-screen img,
+    .game-won-screen img {
+        margin-bottom: 10px;
+        max-height: 40vh;
+    }
+    .game-over-screen button,
+    .start-screen button,
+    .level-complete-screen button,
+    .game-won-screen button {
+        font-size: 20px;
+        padding: 12px 25px;
+    }
+    .mobile-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 0.7em;
+    }
+    .explanation-button {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 0.7em !important;
+    }
+    .explanation-modal-content {
+        padding: 20px;
+    }
+    .explanation-modal-content h2 {
+        font-size: 1.5em;
+    }
+    .explanation-modal-content h3 {
+        font-size: 1.1em;
+    }
+    .explanation-modal-content .key-symbol {
+        font-size: 1em;
+    }
+    .explanation-modal-content p,
+    .explanation-modal-content li {
+        font-size: 0.9em;
+    }
+    .close-button {
+        font-size: 1em;
+    }
 }
 
 @media (max-width: 480px) {
     .mobile-btn {
         width: 65px;
         height: 65px;
-        font-size: 2.5em;
+        font-size: 2.2em;
     }
     .game-over-screen button,
     .start-screen button,
@@ -320,7 +500,7 @@ button:active {
     .mobile-btn {
         width: 60px;
         height: 60px;
-        font-size: 2.2em;
+        font-size: 1em;
     }
     .game-over-screen button,
     .start-screen button,
@@ -338,10 +518,10 @@ button:active {
     .mobile-btn {
         width: 55px;
         height: 55px;
-        font-size: 2em;
+        font-size: 1em;
     }
     h1 {
-        font-size: 1.8em;
+        font-size: 1em;
     }
     .game-over-screen button,
     .start-screen button,

@@ -11,41 +11,77 @@ function resetKeyboardState() {
     keyboard.SPACE = false;
 }
 
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+}
+
 function checkOrientation() {
     const orientationMessage = document.getElementById('orientationMessage');
     const canvasElement = document.getElementById('canvas');
     const mobileControls = document.querySelector('.mobile-controls-wrapper');
+    const controlsContainer = document.querySelector('.controls-container'); 
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const levelCompleteScreen = document.getElementById('levelCompleteScreen');
     const gameWonScreen = document.getElementById('gameWonScreen');
+    const explanationModal = document.getElementById('explanationModal');
 
-    if (window.innerWidth <= 770 && window.innerHeight > window.innerWidth) {
+    const gameIsRunning = world && !world.isGameOver && !world.isGameWon;
+    const isModalOpen = !explanationModal.classList.contains('d-none');
+
+    if (window.innerHeight > window.innerWidth) { 
         orientationMessage.classList.remove('d-none');
-        canvasElement.classList.add('d-none');
+        canvasElement.classList.add('d-none'); 
         mobileControls.classList.add('d-none');
+        controlsContainer.classList.add('d-none');
         startScreen.classList.add('d-none');
         gameOverScreen.classList.add('d-none');
         levelCompleteScreen.classList.add('d-none');
         gameWonScreen.classList.add('d-none');
-    } else {
+        explanationModal.classList.add('d-none');
+    } else { 
         orientationMessage.classList.add('d-none');
 
-        const gameActive = startScreen.classList.contains('d-none') && 
-                           gameOverScreen.classList.contains('d-none') &&
-                           levelCompleteScreen.classList.contains('d-none') &&
-                           gameWonScreen.classList.contains('d-none');
+        if (isModalOpen) {
+            canvasElement.classList.add('d-none');
+            mobileControls.classList.add('d-none');
+            controlsContainer.classList.add('d-none');
+            startScreen.classList.add('d-none');
+            gameOverScreen.classList.add('d-none');
+            levelCompleteScreen.classList.add('d-none');
+            gameWonScreen.classList.add('d-none');
 
-        if (gameActive) {
-            canvasElement.classList.remove('d-none');
-            if (window.innerWidth <= 769) {
+        } else if (gameIsRunning) {
+            canvasElement.classList.remove('d-none'); 
+            if (isTouchDevice()) {
                 mobileControls.classList.remove('d-none');
+                controlsContainer.classList.add('d-none');
             } else {
                 mobileControls.classList.add('d-none');
+                controlsContainer.classList.remove('d-none');
             }
+            startScreen.classList.add('d-none');
+            gameOverScreen.classList.add('d-none');
+            levelCompleteScreen.classList.add('d-none');
+            gameWonScreen.classList.add('d-none');
         } else {
             canvasElement.classList.add('d-none');
             mobileControls.classList.add('d-none');
+            controlsContainer.classList.remove('d-none');
+
+            if (!startScreen.classList.contains('d-none')) {
+                startScreen.classList.remove('d-none');
+            } else if (!gameOverScreen.classList.contains('d-none')) {
+                gameOverScreen.classList.remove('d-none');
+            } else if (!levelCompleteScreen.classList.contains('d-none')) {
+                levelCompleteScreen.classList.remove('d-none');
+            } else if (!gameWonScreen.classList.contains('d-none')) {
+                gameWonScreen.classList.remove('d-none');
+            } else {
+                startScreen.classList.remove('d-none');
+            }
         }
     }
 }
@@ -61,34 +97,60 @@ function init(){
 
 function startGame() {
     document.getElementById('startScreen').classList.add('d-none');
-    init();
+    document.getElementById('gameOverScreen').classList.add('d-none');
+    document.getElementById('levelCompleteScreen').classList.add('d-none');
+    document.getElementById('gameWonScreen').classList.add('d-none');
+    document.getElementById('canvas').classList.remove('d-none'); 
+    
+    init(); 
     resetKeyboardState();
-    checkOrientation();
+    checkOrientation(); 
+    
+    if (world && !isMutedGlobally) {
+        world.levelSound.play();
+        world.levelSoundPlaying = true;
+    }
+
+    if (isTouchDevice()) {
+        toggleFullscreen(); 
+    }
 }
 
 function toggleFullscreen() {
     let gameWrapper = document.querySelector('.game-wrapper');
+    let isCurrentlyFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
-    if (!document.fullscreenElement) { 
+    if (!isCurrentlyFullscreen) { 
         if (gameWrapper.requestFullscreen) {
             gameWrapper.requestFullscreen();
-        } else if (gameWrapper.webkitRequestFullscreen) {
+        } else if (gameWrapper.webkitRequestFullscreen) { 
             gameWrapper.webkitRequestFullscreen();
-        } else if (gameWrapper.msRequestFullscreen) {
+        } else if (gameWrapper.msRequestFullscreen) { 
             gameWrapper.msRequestFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Fenstermodus';
+        gameWrapper.classList.add('fullscreen-active');
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
+        } else if (document.webkitExitFullscreen) { 
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
+        } else if (document.msExitFullscreen) { 
             document.msExitFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Vollbild';
+        gameWrapper.classList.remove('fullscreen-active');
     }
+    setTimeout(() => {
+        checkOrientation();
+    }, 100);
 }
+
+document.addEventListener('fullscreenchange', () => { checkOrientation(); });
+document.addEventListener('webkitfullscreenchange', () => { checkOrientation(); });
+document.addEventListener('mozfullscreenchange', () => { checkOrientation(); });
+document.addEventListener('MSFullscreenChange', () => { checkOrientation(); });
+
 
 function toggleMute() {
     isMutedGlobally = !isMutedGlobally;
@@ -97,11 +159,18 @@ function toggleMute() {
         world.levelSound.muted = isMutedGlobally;
         world.chickenSound.muted = isMutedGlobally;
         world.chickenBossDieSound.muted = isMutedGlobally;
+        world.brokenBottleSound.muted = isMutedGlobally;
 
         if (world.character) {
             world.character.jumpSound.muted = isMutedGlobally;
             world.character.hitSound.muted = isMutedGlobally;
             world.character.deathSound.muted = isMutedGlobally;
+            world.character.stepsSound.muted = isMutedGlobally;
+            if (isMutedGlobally) {
+                world.character.stepsSound.pause();
+                world.character.stepsSound.currentTime = 0;
+                world.character.stepsSoundPlaying = false;
+            }
         }
     }
     updateMuteButton();
@@ -113,6 +182,69 @@ function updateMuteButton() {
         muteBtn.innerText = isMutedGlobally ? 'Sound An' : 'Sound Mute';
     }
 }
+
+function toggleExplanationModal() {
+    const explanationModal = document.getElementById('explanationModal');
+    const canvasElement = document.getElementById('canvas');
+    const mobileControls = document.querySelector('.mobile-controls-wrapper');
+    const controlsContainer = document.querySelector('.controls-container');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const levelCompleteScreen = document.getElementById('levelCompleteScreen');
+    const gameWonScreen = document.getElementById('gameWonScreen');
+
+    if (explanationModal.classList.contains('d-none')) {
+        explanationModal.classList.remove('d-none');
+        if (world) {
+            world.gamePaused = true;
+            world.levelSound.pause();
+            world.chickenSound.pause();
+            if (world.character) {
+                world.character.stepsSound.pause();
+            }
+        }
+        canvasElement.classList.add('d-none');
+        mobileControls.classList.add('d-none');
+        controlsContainer.classList.add('d-none');
+        startScreen.classList.add('d-none');
+        gameOverScreen.classList.add('d-none');
+        levelCompleteScreen.classList.add('d-none');
+        gameWonScreen.classList.add('d-none');
+
+    } else {
+        explanationModal.classList.add('d-none');
+        if (world) {
+            world.gamePaused = false;
+            if (!isMutedGlobally) {
+                world.levelSound.play();
+            }
+        }
+        const gameIsRunning = world && !world.isGameOver && !world.isGameWon;
+
+        if (gameIsRunning) {
+            canvasElement.classList.remove('d-none');
+            if (isTouchDevice()) {
+                mobileControls.classList.remove('d-none');
+            } else {
+                controlsContainer.classList.remove('d-none');
+            }
+        } else {
+            if (!startScreen.classList.contains('d-none')) {
+                startScreen.classList.remove('d-none');
+            } else if (!gameOverScreen.classList.contains('d-none')) {
+                gameOverScreen.classList.remove('d-none');
+            } else if (!levelCompleteScreen.classList.contains('d-none')) {
+                levelCompleteScreen.classList.remove('d-none');
+            } else if (!gameWonScreen.classList.contains('d-none')) {
+                gameWonScreen.classList.remove('d-none');
+            } else {
+                startScreen.classList.remove('d-none');
+            }
+        }
+    }
+    checkOrientation();
+}
+
 
 function restartGame() {
     location.reload(); 
@@ -127,29 +259,12 @@ function goToNextLevelFromButton() {
 }
 
 function resizeCanvas() {
-    const aspectRatio = 720 / 480;
-    let newWidth = window.innerWidth * 0.9;
-    let newHeight = newWidth / aspectRatio;
-
-    if (newWidth > 720) {
-        newWidth = 720;
-        newHeight = 480;
-    }
-
-    if (newHeight > window.innerHeight * 0.7) {
-        newHeight = window.innerHeight * 0.7;
-        newWidth = newHeight * aspectRatio;
-    }
-
-    canvas.width = newWidth;
-    canvas.height = newHeight;
+    canvas.width = 720;
+    canvas.height = 480;
 }
 
 
 window.addEventListener('resize', () => {
-    if (canvas) {
-        resizeCanvas();
-    }
     checkOrientation();
 });
 
@@ -159,7 +274,7 @@ window.addEventListener('load', () => {
 
 
 window.addEventListener('keydown', (event) => {
-    if (world && !world.isGameOver && !world.isGameWon) {
+    if (world && !world.isGameOver && !world.isGameWon && !world.gamePaused) {
         if (event.keyCode == 39) { 
             keyboard.RIGHT = true;
         }
@@ -184,7 +299,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
-    if (world && !world.isGameOver && !world.isGameWon) {
+    if (world && !world.isGameOver && !world.isGameWon && !world.gamePaused) {
         if (event.keyCode == 39) {
             keyboard.RIGHT = false;
         }
