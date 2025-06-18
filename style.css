@@ -10,18 +10,19 @@
 }
 
 html, body {
-    height: 100vh;
-    width: 100vw;
+    height: 100%; /* Volle Höhe des Viewports */
+    width: 100%; /* Volle Breite des Viewports */
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: hidden; /* Verhindert Scrollbalken */
 }
 
 body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column; /* Elemente untereinander anordnen */
+    align-items: center; /* Horizontale Zentrierung */
+    justify-content: center; /* Vertikale Zentrierung */
+    min-height: 100vh; /* Mindestens die Höhe des Viewports */
     background-image: url('img/body_background/body_background.png');
     background-size: cover;
     background-position: center;
@@ -36,19 +37,29 @@ body {
 }
 
 .game-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column; /* Canvas und andere Screens untereinander */
+    align-items: center; /* Horizontal zentrieren */
+    justify-content: center; /* Vertikal zentrieren */
+    width: 100vw; /* Volle Viewport-Breite für Mobil */
+    height: 100vh; /* Volle Viewport-Höhe für Mobil */
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden;
+    position: relative; /* Für z-index und absolute Positionierung von Elementen innerhalb */
+    overflow: hidden; /* Verhindert interne Scrollbalken */
 }
+
+/* Anpassungen für Desktop-Layout (ab 770px Breite) */
+@media (min-width: 770px) {
+    .game-wrapper {
+        width: 720px; /* Begrenzte Breite auf Desktop */
+        height: 480px; /* Begrenzte Höhe auf Desktop */
+        min-height: unset; /* Überschreibt min-height von Body */
+        justify-content: center; /* Inhalte zentrieren */
+        margin-bottom: 20px; /* Platz für controls-container */
+    }
+}
+
 
 h1 {
     font-size: 3em;
@@ -66,31 +77,47 @@ canvas {
     display: block;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    height: 100%;
-    max-width: 720px;
-    max-height: 480px;
+    width: 100%; /* Füllt 100% der Breite des game-wrapper */
+    height: 100%; /* Füllt 100% der Höhe des game-wrapper */
+    max-width: 720px; /* Max Breite für Desktop */
+    max-height: 480px; /* Max Höhe für Desktop */
     touch-action: manipulation;
-    object-fit: contain;
+    object-fit: contain; /* Seitenverhältnis beibehalten, ggf. Letterbox */
     flex-shrink: 0;
+    /* margin-bottom wird vom game-wrapper behandelt, wenn es sich um den Desktop handelt */
 }
 
+/* Styling für den game-wrapper im Fullscreen-Modus (durch JS getriggert) */
 .game-wrapper.fullscreen-active {
+    position: fixed; /* Fixiert am Viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     padding: 0;
+    margin: 0; /* Keine Ränder im Fullscreen */
+    display: flex; /* Stellt Flex-Verhalten sicher */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99; /* Unter Modalen, aber über dem Body-Hintergrund */
 }
 
+/* Canvas-Anpassungen im Fullscreen-Modus */
 .game-wrapper.fullscreen-active canvas {
     max-width: 100vw;
     max-height: 100vh;
     border-radius: 0;
     box-shadow: none;
+    object-fit: fill; /* Füllt die gesamte Fläche, kann verzerren */
+    margin-bottom: 0; /* Kein Margin im Fullscreen */
 }
 
-
+/* Desktop-Steuerelemente-Container */
 .controls-container {
     width: 720px;
     max-width: 90vw;
-    margin-top: 30px;
+    margin-top: 0; /* Abstand wird durch margin-bottom des game-wrapper gegeben */
     padding: 15px 25px;
     text-align: center;
     color: #333;
@@ -101,6 +128,14 @@ canvas {
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    display: none; /* Standardmäßig ausgeblendet (für Mobilgeräte) */
+}
+
+/* Desktop-Steuerelemente nur auf größeren Bildschirmen (Desktop) anzeigen */
+@media (min-width: 770px) {
+    .controls-container {
+        display: block; /* Auf Desktop sichtbar */
+    }
 }
 
 .controls-container h2 {
@@ -155,21 +190,23 @@ button:active {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Alle Bildschirme (Start, Game Over, Level Complete, Game Won) und der Erklärungs-Modal */
 .game-over-screen,
 .start-screen,
 .level-complete-screen,
-.game-won-screen {
-    position: fixed;
+.game-won-screen,
+.explanation-modal {
+    position: fixed; /* Fixiert, um den gesamten Viewport zu überdecken */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    z-index: 101;
+    z-index: 101; /* Sicherstellen, dass sie über allem anderen liegen */
     text-align: center;
 }
 
@@ -231,17 +268,25 @@ button:active {
     display: none !important;
 }
 
+/* Mobiler Steuerelemente-Container */
 .mobile-controls-wrapper {
-    position: fixed;
+    position: fixed; /* Fixiert am Viewport */
     bottom: 20px;
     left: 0;
     right: 0;
-    display: flex;
+    display: none; /* Standardmäßig ausgeblendet (für Desktop) */
     justify-content: space-between;
     align-items: flex-end;
     padding: 0 10px;
     box-sizing: border-box;
-    z-index: 100;
+    z-index: 100; /* Über dem Canvas */
+}
+
+/* Mobile Steuerelemente nur auf kleineren Bildschirmen (Mobil) anzeigen */
+@media (max-width: 769px) {
+    .mobile-controls-wrapper {
+        display: flex; /* Auf Mobil sichtbar */
+    }
 }
 
 .mobile-controls-left,
@@ -293,19 +338,6 @@ button:active {
 .orientation-message p {
     margin: 0;
     max-width: 80%;
-}
-
-.explanation-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
 }
 
 .explanation-modal-content {
@@ -387,13 +419,8 @@ button:active {
     min-width: unset !important;
 }
 
+/* Media Queries für Responsive Anpassungen der Button-Symbolgrößen */
 @media (max-width: 769px) {
-    .controls-container {
-        display: none;
-    }
-    .mobile-controls-wrapper {
-        display: flex;
-    }
     h1 {
         font-size: 2em;
     }
@@ -412,26 +439,24 @@ button:active {
     }
 }
 
+/* Hochformat auf Geräten mit max. 770px Breite */
 @media (max-width: 770px) and (orientation: portrait) {
-    canvas,
-    .mobile-controls-wrapper {
-        display: none !important;
-    }
-    .orientation-message {
-        display: flex !important;
-    }
-    .controls-container {
-        display: none !important;
-    }
+    .game-wrapper, /* Gesamtes Spiel ausblenden */
+    .mobile-controls-wrapper, /* Mobile Controls ausblenden */
+    .controls-container, /* Desktop Controls ausblenden */
     .start-screen,
     .game-over-screen,
     .level-complete-screen,
     .game-won-screen,
     .explanation-modal {
-        display: none !important;
+        display: none !important; /* Alles ausblenden im Hochformat */
+    }
+    .orientation-message {
+        display: flex !important; /* Orientierungsmeldung einblenden */
     }
 }
 
+/* Anpassungen für kleinere Höhen */
 @media (max-height: 600px) {
     .game-over-screen img,
     .start-screen img,
@@ -478,6 +503,7 @@ button:active {
     }
 }
 
+/* Anpassungen für sehr kleine Breiten */
 @media (max-width: 480px) {
     .mobile-btn {
         width: 65px;
@@ -521,7 +547,7 @@ button:active {
         font-size: 1em;
     }
     h1 {
-        font-size: 1em;
+        font-size: 1.8em;
     }
     .game-over-screen button,
     .start-screen button,
