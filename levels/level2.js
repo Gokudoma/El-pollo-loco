@@ -20,6 +20,8 @@ const level2 = new Level(
         new Chicken(1600, 360),
         new Chicken(1500, 360),
         new Chicken(1300, 360),
+        new ChickenSmall(1800, 370),
+        new ChickenSmall(1700, 360),
         level2Endboss,
     ],
     [
