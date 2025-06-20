@@ -1,6 +1,6 @@
 let canvas;
 let world;
-let keyboard = new Keyboard(); 
+let keyboard = new Keyboard();
 let isMutedGlobally = false;
 
 function resetKeyboardState() {
@@ -21,46 +21,58 @@ function checkOrientation() {
     const orientationMessage = document.getElementById('orientationMessage');
     const canvasElement = document.getElementById('canvas');
     const mobileControls = document.querySelector('.mobile-controls-wrapper');
-    const controlsContainer = document.querySelector('.controls-container'); 
+    const controlsContainer = document.querySelector('.controls-container');
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const levelCompleteScreen = document.getElementById('levelCompleteScreen');
     const gameWonScreen = document.getElementById('gameWonScreen');
     const explanationModal = document.getElementById('explanationModal');
-    
+    const gameWrapper = document.querySelector('.game-wrapper');
+
     const gameIsRunning = world && !world.isGameOver && !world.isGameWon;
     const isModalOpen = !explanationModal.classList.contains('d-none');
     const touchDevice = isTouchDevice();
 
+    canvasElement.style.width = '';
+    canvasElement.style.height = '';
+
     orientationMessage.classList.add('d-none');
     canvasElement.classList.add('d-none');
-    mobileControls.classList.add('d-none');
-    controlsContainer.classList.add('d-none');
     startScreen.classList.add('d-none');
     gameOverScreen.classList.add('d-none');
     levelCompleteScreen.classList.add('d-none');
     gameWonScreen.classList.add('d-none');
+    explanationModal.classList.add('d-none');
+
+    mobileControls.classList.add('d-none');
+    controlsContainer.classList.add('d-none');
+    mobileControls.classList.remove('visible-on-touch-game');
 
     if (isModalOpen) {
         explanationModal.classList.remove('d-none');
         return;
-    } 
-    
-    if (window.innerHeight > window.innerWidth && touchDevice) { 
+    }
+
+    if (window.innerHeight > window.innerWidth && touchDevice) {
         orientationMessage.classList.remove('d-none');
         return;
     }
 
-    if (touchDevice) {
-        mobileControls.classList.remove('d-none');
-    } else {
-        controlsContainer.classList.remove('d-none');
-    }
-
     if (gameIsRunning) {
         canvasElement.classList.remove('d-none');
-    } 
-    else {
+        if (touchDevice) {
+            mobileControls.classList.remove('d-none');
+            mobileControls.classList.add('visible-on-touch-game');
+            gameWrapper.style.width = '100vw';
+            gameWrapper.style.height = '100vh';
+            gameWrapper.style.marginBottom = '';
+        } else {
+            controlsContainer.classList.remove('d-none');
+            gameWrapper.style.width = '720px';
+            gameWrapper.style.height = '480px';
+            gameWrapper.style.marginBottom = '20px';
+        }
+    } else {
         if (!startScreen.classList.contains('d-none')) {
             startScreen.classList.remove('d-none');
         } else if (!gameOverScreen.classList.contains('d-none')) {
@@ -69,7 +81,7 @@ function checkOrientation() {
             levelCompleteScreen.classList.remove('d-none');
         } else if (!gameWonScreen.classList.contains('d-none')) {
             gameWonScreen.classList.remove('d-none');
-        } else { 
+        } else {
             startScreen.classList.remove('d-none');
         }
     }
@@ -79,25 +91,25 @@ function checkOrientation() {
 function init(){
     canvas = document.getElementById('canvas');
     resizeCanvas();
-    world = new World(canvas, keyboard); 
+    world = new World(canvas, keyboard);
     addMobileEventListeners();
     updateMuteButton();
 }
 
 function startGame() {
     document.getElementById('startScreen').classList.add('d-none');
-    
-    init(); 
+
+    init();
     resetKeyboardState();
-    checkOrientation(); 
-    
+    checkOrientation();
+
     if (world && !isMutedGlobally) {
         world.levelSound.play();
         world.levelSoundPlaying = true;
     }
 
     if (isTouchDevice()) {
-        toggleFullscreen(); 
+        toggleFullscreen();
     }
 }
 
@@ -105,12 +117,12 @@ function toggleFullscreen() {
     let gameWrapper = document.querySelector('.game-wrapper');
     let isCurrentlyFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
-    if (!isCurrentlyFullscreen) { 
+    if (!isCurrentlyFullscreen) {
         if (gameWrapper.requestFullscreen) {
             gameWrapper.requestFullscreen();
-        } else if (gameWrapper.webkitRequestFullscreen) { 
+        } else if (gameWrapper.webkitRequestFullscreen) {
             gameWrapper.webkitRequestFullscreen();
-        } else if (gameWrapper.msRequestFullscreen) { 
+        } else if (gameWrapper.msRequestFullscreen) {
             gameWrapper.msRequestFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Fenstermodus';
@@ -118,9 +130,9 @@ function toggleFullscreen() {
     } else {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { 
+        } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { 
+        } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
         document.getElementById('fullscreenBtn').innerText = 'Vollbild';
@@ -131,15 +143,15 @@ function toggleFullscreen() {
     }, 100);
 }
 
-document.addEventListener('fullscreenchange', () => { checkOrientation(); }); 
-document.addEventListener('webkitfullscreenchange', () => { checkOrientation(); }); 
-document.addEventListener('mozfullscreenchange', () => { checkOrientation(); }); 
-document.addEventListener('MSFullscreenChange', () => { checkOrientation(); }); 
+document.addEventListener('fullscreenchange', () => { checkOrientation(); });
+document.addEventListener('webkitfullscreenchange', () => { checkOrientation(); });
+document.addEventListener('mozfullscreenchange', () => { checkOrientation(); });
+document.addEventListener('MSFullscreenChange', () => { checkOrientation(); });
 
 
 function toggleMute() {
     isMutedGlobally = !isMutedGlobally;
-    
+
     if (world) {
         world.levelSound.muted = isMutedGlobally;
         world.chickenSound.muted = isMutedGlobally;
@@ -209,13 +221,13 @@ function toggleExplanationModal() {
                 world.levelSound.play();
             }
         }
-        checkOrientation(); 
+        checkOrientation();
     }
 }
 
 
 function restartGame() {
-    location.reload(); 
+    location.reload();
     resetKeyboardState();
 }
 
@@ -243,24 +255,24 @@ window.addEventListener('load', () => {
 
 window.addEventListener('keydown', (event) => {
     if (world && !world.isGameOver && !world.isGameWon && !world.gamePaused) {
-        if (event.keyCode == 39) { 
+        if (event.keyCode == 39) {
             keyboard.RIGHT = true;
         }
-        if (event.keyCode == 37) { 
+        if (event.keyCode == 37) {
             keyboard.LEFT = true;
         }
-        if (event.keyCode == 38) { 
+        if (event.keyCode == 38) {
             keyboard.UP = true;
         }
-        if (event.keyCode == 40) { 
+        if (event.keyCode == 40) {
             keyboard.DOWN = true;
         }
-        if (event.keyCode == 32) { 
+        if (event.keyCode == 32) {
             keyboard.SPACE = true;
-            event.preventDefault(); 
+            event.preventDefault();
         }
     }
-    if (event.keyCode == 13) { 
+    if (event.keyCode == 13) {
         toggleFullscreen();
         event.preventDefault();
     }

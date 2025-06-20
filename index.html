@@ -34,7 +34,6 @@
 </head>
 
 <body>
-    <!-- Der game-wrapper enthält jetzt nur die Spiel-relevanten visuellen Elemente -->
     <div class="game-wrapper">
         <h1 class="d-none">El Pollo Loco</h1>
 
@@ -43,7 +42,7 @@
             <button onclick="startGame()">Spiel starten</button>
         </div>
 
-        <canvas id="canvas" class="d-none">
+        <canvas id="canvas" class="d-none" width="720" height="480">
         </canvas>
 
         <div id="gameOverScreen" class="game-over-screen d-none">
@@ -66,7 +65,6 @@
         </div>
     </div>
 
-    <!-- Die Steuerelemente und der Erklärungs-Modal sind jetzt direkte Kinder des Bodys -->
     <div class="controls-container">
         <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
         <button onclick="toggleMute()" id="muteBtn">Sound Mute</button>
@@ -90,7 +88,6 @@
         <div class="explanation-modal-content">
             <span class="close-button" onclick="toggleExplanationModal()">&times;</span>
             <h2>Steuerung & Ziele</h2>
-            <h3>Steuerung:</h3>
             <ul>
                 <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
                 <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>

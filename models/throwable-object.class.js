@@ -46,7 +46,7 @@ class ThrowableObject extends MovableObject {
     }
 
     splash() {
-        console.log('Bottle is splashing!'); // Debug-Ausgabe
+        console.log('Bottle is splashing!');
         this.isSplashing = true;
         clearInterval(this.throwInterval);
         
