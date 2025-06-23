@@ -113,7 +113,7 @@ class Character extends MovableObject {
                     this.deathSoundPlayed = true;
                 }
                 this.stopWalkingSound();
-                this.stopSnoringSound(); // Stop snoring if dead
+                this.stopSnoringSound();
             } else {
                 if (this.world && this.world.keyboard) {
                     const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP || this.world.keyboard.SPACE;
@@ -140,26 +140,26 @@ class Character extends MovableObject {
                     if(this.isHurt()){
                         this.playAnimation(this.IMAGES_HURT, 10); 
                         this.stopWalkingSound();
-                        this.stopSnoringSound(); // Stop snoring if hurt
+                        this.stopSnoringSound();
                     } else if(this.isAboveGround() || this.speedY > 0) { 
                         this.playAnimation(this.IMAGES_JUMPING, 3);
                         this.stopWalkingSound();
-                        this.stopSnoringSound(); // Stop snoring if jumping
+                        this.stopSnoringSound();
                     } else if (onGround && !isMoving && isNotHurt && (new Date().getTime() - this.lastMoveTime > 8000)) { 
                         this.playAnimation(this.IMAGES_SLEEP, 5); 
-                        this.startSnoringSound(); // Start snoring
+                        this.startSnoringSound();
                         this.stopWalkingSound();
                     } else if (onGround && isMoving && isNotHurt) { 
                         this.playAnimation(this.IMAGES_WALKING, 1);
                         this.startWalkingSound();
-                        this.stopSnoringSound(); // Stop snoring if walking
+                        this.stopSnoringSound();
                     } else if (onGround && !isMoving && isNotHurt) { 
                         this.playAnimation(this.IMAGES_IDLE, 5);
                         this.stopWalkingSound();
-                        this.stopSnoringSound(); // Stop snoring if idle (but not sleeping yet)
+                        this.stopSnoringSound();
                     } else { 
                         this.stopWalkingSound();
-                        this.stopSnoringSound(); // Fallback to stop snoring
+                        this.stopSnoringSound();
                     }
                 }
             }

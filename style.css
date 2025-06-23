@@ -127,11 +127,6 @@ canvas {
     align-items: center;
 }
 
-@media (min-width: 770px) {
-    .controls-container {
-    }
-}
-
 .controls-container h2 {
     font-size: 1.6em;
     color: rgb(244, 168, 26);
@@ -318,7 +313,7 @@ button:active {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     color: white;
-    display: flex; /* ' !important' entfernt, um JS-Kontrolle zu ermöglichen */
+    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -510,7 +505,7 @@ button:active {
         display: none !important;
     }
     .orientation-message {
-        display: flex !important; /* Diese Regel bleibt bestehen */
+        display: flex !important;
     }
 }
 
