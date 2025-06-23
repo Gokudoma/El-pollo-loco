@@ -25,13 +25,13 @@
     <script src="models/status-bar.class.js"></script>
     <script src="models/status-bar-bottles.class.js"></script>
     <script src="models/status-bar-coins.class.js"></script>
+    <script src="models/status-bar-endboss.class.js"></script>
 
     <script src="levels/level1.js"></script>
     <script src="levels/level2.js"></script>
     <script src="levels/level3.js"></script>
 
     <script src="models/world.class.js"></script>
-
 </head>
 
 <body>
@@ -43,7 +43,7 @@
             <button onclick="startGame()">Spiel starten</button>
         </div>
 
-        <canvas id="canvas" class="d-none" width="720" height="480">
+        <canvas id="canvas" width="720" height="480" class="d-none">
         </canvas>
 
         <div id="gameOverScreen" class="game-over-screen d-none">
@@ -64,6 +64,19 @@
         <div id="orientationMessage" class="orientation-message d-none">
             <p>Bitte drehen Sie Ihr Gerät, um das Spiel im Querformat zu spielen!</p>
         </div>
+
+        <div class="mobile-controls-wrapper d-none">
+            <div class="mobile-controls-left">
+                <button id="btnLeft" class="mobile-btn">◀</button>
+                <button id="btnRight" class="mobile-btn">▶</button>
+                <button id="btnJump" class="mobile-btn">⬆</button>
+            </div>
+            <div class="mobile-controls-right">
+                <button onclick="toggleMute()" id="muteMobileBtn" class="mobile-btn explanation-button">🔊</button>
+                <button onclick="toggleExplanationModal()" id="explanationMobileBtn" class="mobile-btn explanation-button">?</button>
+                <button id="btnThrow" class="mobile-btn">🍶</button>
+            </div>
+        </div>
     </div>
 
     <div class="controls-container">
@@ -76,26 +89,11 @@
         </div>
     </div>
 
-    <div class="mobile-controls-wrapper d-none">
-        <div class="mobile-controls-left">
-            <button id="btnLeft" class="mobile-btn">◀</button>
-            <button id="btnRight" class="mobile-btn">▶</button>
-            <button id="btnJump" class="mobile-btn">⬆</button>
-        </div>
-        <div class="mobile-controls-right">
-            <button onclick="toggleMute()" id="muteMobileBtn" class="mobile-btn explanation-button">🔊</button>
-            <button onclick="toggleExplanationModal()" id="explanationMobileBtn" class="mobile-btn explanation-button">?</button>
-            <button id="btnThrow" class="mobile-btn">🍶</button>
-            <div class="volume-control-mobile">
-                <input type="range" id="volumeSliderMobile" min="0" max="1" step="0.01" value="1">
-            </div>
-        </div>
-    </div>
-
     <div id="explanationModal" class="explanation-modal d-none">
         <div class="explanation-modal-content">
             <span class="close-button" onclick="toggleExplanationModal()">&times;</span>
             <h2>Steuerung & Ziele</h2>
+            <h3>Steuerung:</h3>
             <ul>
                 <li><span class="key-symbol">&#x2190;</span> nach links laufen</li>
                 <li><span class="key-symbol">&#x2192;</span> nach rechts laufen</li>
