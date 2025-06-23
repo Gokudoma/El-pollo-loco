@@ -35,7 +35,6 @@ class World {
         this.setWorld(); 
         this.run();
         this.character.animate(); 
-        this.startCleanupIntervals();
         this.levelSound.loop = true; 
         this.chickenSound.loop = true; 
     }
@@ -68,9 +67,6 @@ class World {
                 this.cleanupSplashedBottles();
             }
         }, 100); 
-    }
-
-    startCleanupIntervals() {
     }
 
     checkThrowObjects() {
