@@ -32,9 +32,8 @@ function checkOrientation() {
     const gameIsRunning = world && !world.isGameOver && !world.isGameWon;
     const isModalOpen = !explanationModal.classList.contains('d-none');
     const touchDevice = isTouchDevice();
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
-    canvasElement.style.width = '';
-    canvasElement.style.height = '';
 
     orientationMessage.classList.add('d-none');
     canvasElement.classList.add('d-none');
@@ -44,9 +43,10 @@ function checkOrientation() {
     gameWonScreen.classList.add('d-none');
     explanationModal.classList.add('d-none');
 
+    mobileControls.classList.remove('mobile-controls-active');
     mobileControls.classList.add('d-none');
     controlsContainer.classList.add('d-none');
-    mobileControls.classList.remove('visible-on-touch-game');
+
 
     if (isModalOpen) {
         explanationModal.classList.remove('d-none');
@@ -58,19 +58,26 @@ function checkOrientation() {
         return;
     }
 
+    if (isFullscreen || touchDevice) {
+        gameWrapper.style.width = '100vw';
+        gameWrapper.style.height = '100vh';
+        gameWrapper.style.marginBottom = '';
+    } else {
+        gameWrapper.style.width = '720px';
+        gameWrapper.style.height = '480px';
+        gameWrapper.style.marginBottom = '20px';
+    }
+
+
     if (gameIsRunning) {
         canvasElement.classList.remove('d-none');
-        if (touchDevice) {
+        if (touchDevice || isFullscreen) {
             mobileControls.classList.remove('d-none');
-            mobileControls.classList.add('visible-on-touch-game');
-            gameWrapper.style.width = '100vw';
-            gameWrapper.style.height = '100vh';
-            gameWrapper.style.marginBottom = '';
+            mobileControls.classList.add('mobile-controls-active');
+            controlsContainer.classList.add('d-none');
         } else {
             controlsContainer.classList.remove('d-none');
-            gameWrapper.style.width = '720px';
-            gameWrapper.style.height = '480px';
-            gameWrapper.style.marginBottom = '20px';
+            mobileControls.classList.add('d-none');
         }
     } else {
         if (!startScreen.classList.contains('d-none')) {
@@ -83,6 +90,15 @@ function checkOrientation() {
             gameWonScreen.classList.remove('d-none');
         } else {
             startScreen.classList.remove('d-none');
+        }
+
+        if (touchDevice || isFullscreen) {
+             mobileControls.classList.remove('d-none');
+             mobileControls.classList.add('mobile-controls-active');
+             controlsContainer.classList.add('d-none');
+        } else {
+            controlsContainer.classList.remove('d-none');
+            mobileControls.classList.add('d-none');
         }
     }
 }
@@ -239,8 +255,6 @@ function goToNextLevelFromButton() {
 }
 
 function resizeCanvas() {
-    canvas.width = 720;
-    canvas.height = 480;
 }
 
 
