@@ -17,21 +17,19 @@ class World {
     isGameWon = false;
     lastBottleThrow = 0;
     bottleCooldown = 1000;
-    chickenBossDieSound = new Audio('audio/chickenBossdies.mp3');
-    endbossGetsHitSound = new Audio('audio/endboss_gets_hit.mp3');
+    chickenBossDieSound = new Audio('audio/chickenBossdies.mp3'); 
     bossSoundPlayed = false;
-    levelSound = new Audio('audio/levelsound.mp3');
+    levelSound = new Audio('audio/levelsound.mp3'); 
     levelSoundPlaying = false;
-    chickenSound = new Audio('audio/chicken.mp3');
+    chickenSound = new Audio('audio/chicken.mp3'); 
     chickenSoundPlaying = false; 
-    brokenBottleSound = new Audio('audio/brokenBottle.mp3');
-    bottleSound = new Audio('audio/bottle.mp3');
+    brokenBottleSound = new Audio('audio/brokenBottle.mp3'); 
     gamePaused = false;
 
-    constructor(canvas, keyboard){
+    constructor(canvas, keyboard){ 
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
-        this.keyboard = keyboard;
+        this.keyboard = keyboard; 
         this.level = allLevels[this.currentLevelIndex];
         this.draw();
         this.setWorld(); 
@@ -49,6 +47,9 @@ class World {
                 enemy.setWorld(this);
             }
         });
+        if (this.level.endboss) {
+            this.level.endboss.setWorld(this);
+        }
     }
 
     run() {
@@ -81,10 +82,6 @@ class World {
             this.character.bottles--;
             this.statusBarBottles.setPercentage(this.character.bottles * 20);
             this.lastBottleThrow = new Date().getTime();
-            if (!isMutedGlobally) {
-                this.bottleSound.currentTime = 0;
-                this.bottleSound.play();
-            }
         }
     } 
 
@@ -100,8 +97,8 @@ class World {
 
             this.throwableObjects.forEach((bottle) => {
                 if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
-                    bottle.splash();
-                    enemy.hit();
+                    bottle.splash(); 
+                    enemy.hit(); 
                     this.brokenBottleSound.currentTime = 0; 
                     if (!isMutedGlobally) { 
                         this.brokenBottleSound.play();
@@ -109,9 +106,6 @@ class World {
 
                     if (enemy instanceof Endboss) {
                         this.endbossHealthBar.setPercentage(enemy.energy);
-                        if (!isMutedGlobally) {
-                            this.endbossGetsHitSound.play();
-                        }
                     }
 
                     if (enemy instanceof Endboss && enemy.isDead() && !this.bossSoundPlayed) {
@@ -129,10 +123,6 @@ class World {
                 this.character.bottles++;
                 this.level.bottles.splice(index, 1);
                 this.statusBarBottles.setPercentage(this.character.bottles * 20);
-                if (!isMutedGlobally) {
-                    this.bottleSound.currentTime = 0;
-                    this.bottleSound.play();
-                }
             }
         });
 
@@ -142,10 +132,6 @@ class World {
                 this.level.coins.splice(index, 1);
                 let collectedCoinPercentage = (this.character.coins / this.level.initialCoinCount) * 100;
                 this.statusBarCoins.setPercentage(collectedCoinPercentage);
-                if (!isMutedGlobally) {
-                    this.coinSound.currentTime = 0;
-                    this.coinSound.play();
-                }
             }
         });
     }
@@ -183,7 +169,7 @@ class World {
 
     checkLevelCompletion() {
         const allCoinsCollected = this.level.coins.length === 0;
-        const endbossDefeated = this.level.endboss && this.level.endboss.isDead();
+        const endbossDefeated = this.level.endboss && this.level.endboss.isDead(); 
 
         if (allCoinsCollected && endbossDefeated) {
             this.levelComplete();
@@ -221,7 +207,7 @@ class World {
         this.statusBarCoins.setPercentage(0); 
         this.endbossHealthBar.setPercentage(100);
         this.throwableObjects = []; 
-        this.bossSoundPlayed = false;
+        this.bossSoundPlayed = false; 
         
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
