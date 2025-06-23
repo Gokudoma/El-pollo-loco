@@ -224,7 +224,7 @@ class Character extends MovableObject {
         this.img = this.imageCache[this.IMAGES_WALKING[0]];
         this.deathSoundPlayed = false;
         this.stopWalkingSound(); 
-        this.stopSnoringSound(); // Stop snoring on reset
+        this.stopSnoringSound();
         this.lastMoveTime = new Date().getTime();
     }
 }

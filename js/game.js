@@ -1,7 +1,18 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let isMutedGlobally = false;
+let isMutedGlobally;
+let currentVolume;
+
+function loadSettings() {
+    isMutedGlobally = JSON.parse(localStorage.getItem('isMutedGlobally')) || false;
+    currentVolume = parseFloat(localStorage.getItem('currentVolume')) || 1.0;
+}
+
+function saveSettings() {
+    localStorage.setItem('isMutedGlobally', JSON.stringify(isMutedGlobally));
+    localStorage.setItem('currentVolume', currentVolume);
+}
 
 function resetKeyboardState() {
     keyboard.RIGHT = false;
@@ -34,7 +45,6 @@ function checkOrientation() {
     const touchDevice = isTouchDevice();
     const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
-
     orientationMessage.classList.add('d-none');
     canvasElement.classList.add('d-none');
     startScreen.classList.add('d-none');
@@ -42,11 +52,9 @@ function checkOrientation() {
     levelCompleteScreen.classList.add('d-none');
     gameWonScreen.classList.add('d-none');
     explanationModal.classList.add('d-none');
-
-    mobileControls.classList.remove('mobile-controls-active');
     mobileControls.classList.add('d-none');
+    mobileControls.classList.remove('mobile-controls-active');
     controlsContainer.classList.add('d-none');
-
 
     if (isModalOpen) {
         explanationModal.classList.remove('d-none');
@@ -68,26 +76,21 @@ function checkOrientation() {
         gameWrapper.style.marginBottom = '20px';
     }
 
-
     if (gameIsRunning) {
         canvasElement.classList.remove('d-none');
         if (touchDevice || isFullscreen) {
             mobileControls.classList.remove('d-none');
             mobileControls.classList.add('mobile-controls-active');
-            controlsContainer.classList.add('d-none');
         } else {
             controlsContainer.classList.remove('d-none');
-            mobileControls.classList.add('d-none');
         }
     } else {
-        if (!startScreen.classList.contains('d-none')) {
-            startScreen.classList.remove('d-none');
-        } else if (!gameOverScreen.classList.contains('d-none')) {
-            gameOverScreen.classList.remove('d-none');
+        if (!gameWonScreen.classList.contains('d-none')) {
+            gameWonScreen.classList.remove('d-none');
         } else if (!levelCompleteScreen.classList.contains('d-none')) {
             levelCompleteScreen.classList.remove('d-none');
-        } else if (!gameWonScreen.classList.contains('d-none')) {
-            gameWonScreen.classList.remove('d-none');
+        } else if (!gameOverScreen.classList.contains('d-none')) {
+            gameOverScreen.classList.remove('d-none');
         } else {
             startScreen.classList.remove('d-none');
         }
@@ -95,21 +98,20 @@ function checkOrientation() {
         if (touchDevice || isFullscreen) {
              mobileControls.classList.remove('d-none');
              mobileControls.classList.add('mobile-controls-active');
-             controlsContainer.classList.add('d-none');
         } else {
             controlsContainer.classList.remove('d-none');
-            mobileControls.classList.add('d-none');
         }
     }
 }
 
-
 function init(){
     canvas = document.getElementById('canvas');
-    resizeCanvas();
+    loadSettings();
     world = new World(canvas, keyboard);
     addMobileEventListeners();
     updateMuteButton();
+    setupVolumeSlider();
+    setGlobalVolume();
 }
 
 function startGame() {
@@ -164,28 +166,10 @@ document.addEventListener('webkitfullscreenchange', () => { checkOrientation(); 
 document.addEventListener('mozfullscreenchange', () => { checkOrientation(); });
 document.addEventListener('MSFullscreenChange', () => { checkOrientation(); });
 
-
 function toggleMute() {
     isMutedGlobally = !isMutedGlobally;
-
-    if (world) {
-        world.levelSound.muted = isMutedGlobally;
-        world.chickenSound.muted = isMutedGlobally;
-        world.chickenBossDieSound.muted = isMutedGlobally;
-        world.brokenBottleSound.muted = isMutedGlobally;
-
-        if (world.character) {
-            world.character.jumpSound.muted = isMutedGlobally;
-            world.character.hitSound.muted = isMutedGlobally;
-            world.character.deathSound.muted = isMutedGlobally;
-            world.character.stepsSound.muted = isMutedGlobally;
-            if (isMutedGlobally) {
-                world.character.stepsSound.pause();
-                world.character.stepsSound.currentTime = 0;
-                world.character.stepsSoundPlaying = false;
-            }
-        }
-    }
+    saveSettings();
+    setGlobalVolume();
     updateMuteButton();
 }
 
@@ -198,6 +182,79 @@ function updateMuteButton() {
     }
     if (muteMobileBtn) {
         muteMobileBtn.innerText = isMutedGlobally ? '🔇' : '🔊';
+    }
+}
+
+function setupVolumeSlider() {
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeSliderMobile = document.getElementById('volumeSliderMobile');
+
+    if (volumeSlider) {
+        volumeSlider.value = currentVolume;
+        volumeSlider.addEventListener('input', (e) => {
+            currentVolume = parseFloat(e.target.value);
+            saveSettings();
+            setGlobalVolume();
+        });
+    }
+    if (volumeSliderMobile) {
+        volumeSliderMobile.value = currentVolume;
+        volumeSliderMobile.addEventListener('input', (e) => {
+            currentVolume = parseFloat(e.target.value);
+            saveSettings();
+            setGlobalVolume();
+        });
+    }
+}
+
+function setGlobalVolume() {
+    if (!world) return;
+
+    const volumeToSet = isMutedGlobally ? 0 : currentVolume;
+
+    if (world.levelSound) {
+        world.levelSound.volume = volumeToSet;
+    }
+    if (world.chickenSound) {
+        world.chickenSound.volume = volumeToSet;
+    }
+    if (world.chickenBossDieSound) {
+        world.chickenBossDieSound.volume = volumeToSet;
+    }
+    if (world.brokenBottleSound) {
+        world.brokenBottleSound.volume = volumeToSet;
+    }
+
+    if (world.character) {
+        if (world.character.jumpSound) {
+            world.character.jumpSound.volume = volumeToSet;
+        }
+        if (world.character.hitSound) {
+            world.character.hitSound.volume = volumeToSet;
+        }
+        if (world.character.deathSound) {
+            world.character.deathSound.volume = volumeToSet;
+        }
+        if (world.character.stepsSound) {
+            world.character.stepsSound.volume = volumeToSet;
+            if (isMutedGlobally && world.character.stepsSoundPlaying) {
+                world.character.stepsSound.pause();
+                world.character.stepsSoundPlaying = false;
+            } else if (!isMutedGlobally && !world.character.stepsSoundPlaying && (world.keyboard.RIGHT || world.keyboard.LEFT) && !world.character.isAboveGround()) {
+                world.character.stepsSound.play();
+                world.character.stepsSoundPlaying = true;
+            }
+        }
+        if (world.character.snoringSound) {
+            world.character.snoringSound.volume = volumeToSet;
+            if (isMutedGlobally && world.character.snoringSoundPlaying) {
+                world.character.snoringSound.pause();
+                world.character.snoringSoundPlaying = false;
+            } else if (!isMutedGlobally && !world.character.snoringSoundPlaying && (new Date().getTime() - world.character.lastMoveTime > 8000) && !world.character.isAboveGround() && !world.character.isHurt() && !world.character.isDead()) {
+                world.character.snoringSound.play();
+                world.character.snoringSoundPlaying = true;
+            }
+        }
     }
 }
 
@@ -219,6 +276,7 @@ function toggleExplanationModal() {
             world.chickenSound.pause();
             if (world.character) {
                 world.character.stepsSound.pause();
+                world.character.snoringSound.pause();
             }
         }
         canvasElement.classList.add('d-none');
@@ -241,7 +299,6 @@ function toggleExplanationModal() {
     }
 }
 
-
 function restartGame() {
     location.reload();
     resetKeyboardState();
@@ -257,7 +314,6 @@ function goToNextLevelFromButton() {
 function resizeCanvas() {
 }
 
-
 window.addEventListener('resize', () => {
     checkOrientation();
 });
@@ -265,7 +321,6 @@ window.addEventListener('resize', () => {
 window.addEventListener('load', () => {
     checkOrientation();
 });
-
 
 window.addEventListener('keydown', (event) => {
     if (world && !world.isGameOver && !world.isGameWon && !world.gamePaused) {

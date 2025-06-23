@@ -266,7 +266,7 @@ button:active {
     bottom: 20px;
     left: 0;
     right: 0;
-    display: none;
+    display: flex;
     justify-content: space-between;
     align-items: flex-end;
     padding: 0 10px;
@@ -318,7 +318,7 @@ button:active {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     color: white;
-    display: flex;
+    display: flex; /* ' !important' entfernt, um JS-Kontrolle zu ermöglichen */
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -411,6 +411,57 @@ button:active {
     min-width: unset !important;
 }
 
+.volume-control, .volume-control-mobile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.volume-control label {
+    font-size: 1em;
+    color: #666;
+    white-space: nowrap;
+}
+
+.volume-control input[type="range"],
+.volume-control-mobile input[type="range"] {
+    -webkit-appearance: none;
+    width: 150px;
+    height: 8px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border-radius: 4px;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb,
+.volume-control-mobile input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.volume-control input[type="range"]::-moz-range-thumb,
+.volume-control-mobile input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 769px) {
     h1 {
         font-size: 2em;
@@ -428,6 +479,23 @@ button:active {
     .explanation-modal-content li {
         font-size: 1em;
     }
+    .controls-container .volume-control {
+        display: none;
+    }
+    .mobile-controls-wrapper.mobile-controls-active .volume-control-mobile {
+        display: flex;
+        width: auto;
+        margin-top: 0;
+        margin-right: 10px;
+        align-self: center;
+        order: -1;
+    }
+}
+
+@media (min-width: 770px) {
+    .mobile-controls-wrapper .volume-control-mobile {
+        display: none;
+    }
 }
 
 @media (max-width: 770px) and (orientation: portrait) {
@@ -442,7 +510,7 @@ button:active {
         display: none !important;
     }
     .orientation-message {
-        display: flex !important;
+        display: flex !important; /* Diese Regel bleibt bestehen */
     }
 }
 
