@@ -424,7 +424,6 @@ button:active {
 
 .volume-control input[type="range"],
 .volume-control-mobile input[type="range"] {
-    -webkit-appearance: none;
     width: 150px;
     height: 8px;
     background: #d3d3d3;
@@ -477,13 +476,9 @@ button:active {
     .controls-container .volume-control {
         display: none;
     }
+    /* Dieser Block blendet den Lautstärkeregler auf mobilen Geräten aus */
     .mobile-controls-wrapper.mobile-controls-active .volume-control-mobile {
-        display: flex;
-        width: auto;
-        margin-top: 0;
-        margin-right: 10px;
-        align-self: center;
-        order: -1;
+        display: none !important; /* Wichtig: Überschreibt display: flex; */
     }
 }
 
