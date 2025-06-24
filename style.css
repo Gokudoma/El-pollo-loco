@@ -49,6 +49,10 @@ body {
     overflow: hidden;
 }
 
+.close-button {
+    cursor: pointer;
+}
+
 @media (min-width: 770px) {
     .game-wrapper {
         width: 720px;
