@@ -1,4 +1,6 @@
-let allLevels = [level1, level2, level3]; // Assuming level1, level2, level3 are defined elsewhere
+// models/world.class.js
+
+let allLevels = [level1, level2, level3]; // Assumes level1, level2, level3 are defined elsewhere
 
 class World {
     character = new Character();
@@ -42,6 +44,12 @@ class World {
         this.character.animate();
         this.levelSound.loop = true;
         this.chickenSound.loop = true;
+        if (typeof currentVolume !== 'undefined') {
+            this.levelSound.volume = currentVolume;
+            this.chickenSound.volume = currentVolume;
+            this.chickenBossDieSound.volume = currentVolume;
+            this.brokenBottleSound.volume = currentVolume;
+        }
     }
 
     /**
@@ -131,7 +139,7 @@ class World {
             bottle.splash();
             enemy.hit();
             this.brokenBottleSound.currentTime = 0;
-            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) { // Check for global mute state
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
                 this.brokenBottleSound.play();
             }
             this._updateEndbossHealth(enemy);
@@ -155,7 +163,7 @@ class World {
      */
     _playEndbossDeathSound(enemy) {
         if (enemy instanceof Endboss && enemy.isDead() && !this.bossSoundPlayed) {
-            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) { // Check for global mute state
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
                 this.chickenBossDieSound.play();
             }
             this.bossSoundPlayed = true;
@@ -194,7 +202,7 @@ class World {
      */
     checkCollisions() {
         this.level.enemies.forEach(enemy => {
-            this._handleCharacterEnemyCollision(enemy);
+            this._handleCharacterEnemyCollision(enemy); // Corrected from _handleCharacterEnemyEnemyCollision
             this.throwableObjects.forEach(bottle => {
                 this._handleBottleEnemyCollision(bottle, enemy);
             });
@@ -304,19 +312,6 @@ class World {
     }
 
     /**
-     * Resumes level sound and updates orientation.
-     */
-    _resumeLevelSoundAndOrientation() {
-        if (!this.levelSoundPlaying && typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
-            this.levelSound.play();
-            this.levelSoundPlaying = true;
-        }
-        if (typeof checkOrientation === 'function') { // Ensure checkOrientation is defined globally
-            checkOrientation();
-        }
-    }
-
-    /**
      * Transitions to the next level.
      */
     goToNextLevel() {
@@ -324,7 +319,21 @@ class World {
         this._updateStatusBarsForNextLevel();
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
-        this._resumeLevelSoundAndOrientation();
+        
+        this.levelSound.pause(); 
+        this.levelSound.currentTime = 0; 
+
+        if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
+            this.levelSound.play();
+            this.levelSoundPlaying = true;
+        } else {
+            this.levelSoundPlaying = false;
+        }
+
+        if (typeof checkOrientation === 'function') {
+            checkOrientation();
+        }
+        this.gamePaused = false;
     }
 
     /**
@@ -373,14 +382,14 @@ class World {
      * @param {DrawableObject} mo - The movable or drawable object to draw.
      */
     addToMap(mo) {
-        if (mo && mo.otherDirection) { // Added check for 'mo' to prevent TypeError
+        if (mo && mo.otherDirection) {
             this.flipImage(mo);
         }
-        if (mo) { // Ensure 'mo' is not undefined before drawing
+        if (mo) {
             mo.draw(this.ctx);
             // mo.drawFrame(this.ctx); // Uncomment for collision box debugging
         }
-        if (mo && mo.otherDirection) { // Added check for 'mo'
+        if (mo && mo.otherDirection) {
             this.flipImageBack(mo);
         }
     }
