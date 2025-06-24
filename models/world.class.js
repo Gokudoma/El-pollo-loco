@@ -26,6 +26,11 @@ class World {
     brokenBottleSound = new Audio('audio/brokenBottle.mp3');
     gamePaused = false;
 
+    /**
+     * Initializes the game world with canvas and keyboard input.
+     * @param {HTMLCanvasElement} canvas - The canvas element for drawing.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -89,8 +94,8 @@ class World {
     checkThrowObjects() {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
         const canThrow = this.keyboard.SPACE && this.character.bottles > 0 &&
-                         !this.character.isDead() && !this.isGameOver &&
-                         !this.isGameWon && timePassed > this.bottleCooldown;
+                             !this.character.isDead() && !this.isGameOver &&
+                             !this.isGameWon && timePassed > this.bottleCooldown;
 
         if (canThrow) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
@@ -126,7 +131,7 @@ class World {
             bottle.splash();
             enemy.hit();
             this.brokenBottleSound.currentTime = 0;
-            if (!isMutedGlobally) {
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) { // Check for global mute state
                 this.brokenBottleSound.play();
             }
             this._updateEndbossHealth(enemy);
@@ -150,7 +155,7 @@ class World {
      */
     _playEndbossDeathSound(enemy) {
         if (enemy instanceof Endboss && enemy.isDead() && !this.bossSoundPlayed) {
-            if (!isMutedGlobally) {
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) { // Check for global mute state
                 this.chickenBossDieSound.play();
             }
             this.bossSoundPlayed = true;
@@ -221,7 +226,6 @@ class World {
             this.chickenSoundPlaying = false;
         }
     }
-
 
     /**
      * Removes dead enemies from the level's enemy array.
@@ -303,11 +307,13 @@ class World {
      * Resumes level sound and updates orientation.
      */
     _resumeLevelSoundAndOrientation() {
-        if (!this.levelSoundPlaying && !isMutedGlobally) {
+        if (!this.levelSoundPlaying && typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
             this.levelSound.play();
             this.levelSoundPlaying = true;
         }
-        checkOrientation(); // Assumes checkOrientation is defined globally
+        if (typeof checkOrientation === 'function') { // Ensure checkOrientation is defined globally
+            checkOrientation();
+        }
     }
 
     /**
@@ -367,12 +373,14 @@ class World {
      * @param {DrawableObject} mo - The movable or drawable object to draw.
      */
     addToMap(mo) {
-        if (mo.otherDirection) {
+        if (mo && mo.otherDirection) { // Added check for 'mo' to prevent TypeError
             this.flipImage(mo);
         }
-        mo.draw(this.ctx);
-        // mo.drawFrame(this.ctx); // Uncomment for collision box debugging
-        if (mo.otherDirection) {
+        if (mo) { // Ensure 'mo' is not undefined before drawing
+            mo.draw(this.ctx);
+            // mo.drawFrame(this.ctx); // Uncomment for collision box debugging
+        }
+        if (mo && mo.otherDirection) { // Added check for 'mo'
             this.flipImageBack(mo);
         }
     }

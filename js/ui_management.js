@@ -42,8 +42,17 @@ function hideAllGameElements(elements) {
     elements.gameWonScreen.classList.add('d-none');
     elements.explanationModal.classList.add('d-none');
     elements.mobileControls.classList.add('d-none');
-    elements.mobileControls.classList.remove('mobile-controls-active');
+    elements.mobileControls.classList.remove('mobile-controls-active'); // Ensure mobile controls are fully hidden
     elements.controlsContainer.classList.add('d-none');
+    elements.gameWrapper.classList.add('d-none'); // Hide the entire game wrapper
+}
+
+/**
+ * Shows the main game wrapper.
+ * @param {Object} elements - Object containing references to DOM elements.
+ */
+function showGameWrapper(elements) {
+    elements.gameWrapper.classList.remove('d-none');
 }
 
 /**
@@ -136,19 +145,31 @@ function displayControls(elements, touchDevice, isFullscreen) {
  */
 function checkOrientation() {
     const elements = getGameUIElements();
-    const gameIsRunning = world && !world.isGameOver && !world.isGameWon;
-    const isModalOpen = !elements.explanationModal.classList.contains('d-none');
+    const gameIsRunning = world && !world.isGameOver && !world.isGameWon; // 'world' assumed global
+    const isModalOpen = !elements.explanationModal.classList.contains('d-none'); // Check if modal is currently NOT hidden
     const touchDevice = isTouchDevice();
     const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
+    // First, hide everything, then decide what to show
     hideAllGameElements(elements);
 
-    if (handleModalOpen(elements, isModalOpen)) return;
-    if (handleOrientationMessage(elements, touchDevice)) return;
+    // If modal is open, only show modal and return
+    if (isModalOpen) {
+        elements.explanationModal.classList.remove('d-none');
+        return; // Stop further display logic
+    }
 
+    // If orientation message is needed, show it and return
+    if (handleOrientationMessage(elements, touchDevice)) {
+        return; // Stop further display logic
+    }
+
+    // If neither modal nor orientation message, show the game wrapper and then its contents
+    showGameWrapper(elements);
     setGameWrapperDimensions(elements, touchDevice, isFullscreen);
     displayGameElementsBasedOnState(elements, gameIsRunning, touchDevice, isFullscreen);
 }
+
 
 /**
  * Toggles the visibility of the explanation modal and pauses/resumes game.
@@ -157,12 +178,27 @@ function toggleExplanationModal() {
     const elements = getGameUIElements();
 
     if (elements.explanationModal.classList.contains('d-none')) {
-        elements.explanationModal.classList.remove('d-none');
-        pauseGameSounds(); // From sound_manager.js
-        hideAllGameElements(elements); // Hide other elements when modal is open
+        // Modal is currently hidden, so show it
+        hideAllGameElements(elements); // Hide everything else
+        elements.explanationModal.classList.remove('d-none'); // Show only the modal
+        // Pause game sounds when modal is open (assuming pauseGameSounds is global)
+        if (typeof pauseGameSounds === 'function') {
+            pauseGameSounds();
+        }
+        if (world) { // Assuming 'world' is globally accessible
+            world.gamePaused = true;
+        }
+
     } else {
-        elements.explanationModal.classList.add('d-none');
-        resumeGameSounds(); // From sound_manager.js
-        checkOrientation();
+        // Modal is currently visible, so hide it
+        elements.explanationModal.classList.add('d-none'); // Hide the modal
+        // Resume game sounds when modal is closed (assuming resumeGameSounds is global)
+        if (typeof resumeGameSounds === 'function') {
+            resumeGameSounds();
+        }
+        if (world) { // Assuming 'world' is globally accessible
+            world.gamePaused = false;
+        }
+        checkOrientation(); // Re-evaluate screen state (e.g., show start screen or game)
     }
 }
