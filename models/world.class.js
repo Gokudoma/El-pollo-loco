@@ -70,7 +70,6 @@ class World {
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkLevelCompletion();
-            this.checkEnemyProximity();
         }
     }
 
@@ -206,24 +205,6 @@ class World {
     }
 
     /**
-     * Checks if an enemy is in proximity to the character and activates sounds/Endboss.
-     * @returns {boolean} True if a proximity enemy was found, false otherwise.
-     */
-    _checkSingleEnemyProximity(enemy) {
-        const distance = enemy.x - this.character.x;
-        const isInRange = distance > -30 && distance < 720;
-
-        if (isInRange && !enemy.isDead()) {
-            if (enemy instanceof Endboss && this.character.x > (enemy.x - 500) && !enemy.walkingTowardsCharacter) {
-                enemy.walkingTowardsCharacter = true;
-                enemy.animateEndbossWalking(this.character); // Assumes animateEndbossWalking exists on Endboss
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Updates the chicken sound based on enemy proximity.
      * @param {boolean} foundProximityEnemy - True if any enemy is in proximity.
      */
@@ -241,18 +222,6 @@ class World {
         }
     }
 
-    /**
-     * Checks for proximity of enemies to the character and manages chicken sounds and Endboss behavior.
-     */
-    checkEnemyProximity() {
-        let foundProximityEnemy = false;
-        this.level.enemies.forEach(enemy => {
-            if (this._checkSingleEnemyProximity(enemy)) {
-                foundProximityEnemy = true;
-            }
-        });
-        this._updateChickenSound(foundProximityEnemy);
-    }
 
     /**
      * Removes dead enemies from the level's enemy array.

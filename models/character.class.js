@@ -81,12 +81,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/5_dead/D-57.png'
     ];
 
-    IMAGES_THROWING = [
-        'img/1_character/4_attack/attack1.png',
-        'img/1_character/4_attack/attack2.png',
-        'img/1_character/4_attack/attack3.png'
-    ];
-
     world;
     hitSound = new Audio('audio/hit.mp3');
     deathSound = new Audio('audio/death.mp3');
@@ -105,7 +99,6 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_SLEEP);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
-        this.loadImages(this.IMAGES_THROWING);
 
         this.applyGravity();
         this.stepsSound.loop = true;
