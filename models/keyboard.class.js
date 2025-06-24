@@ -4,4 +4,4 @@ class Keyboard {
     UP = false;
     DOWN = false;
     SPACE = false;
-}
+} // Initializes all key states to false.

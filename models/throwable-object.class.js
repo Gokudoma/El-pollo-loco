@@ -20,7 +20,7 @@ class ThrowableObject extends MovableObject {
     splashAnimationFinished = false;
     throwInterval = null;
     splashInterval = null;
-    gravityInterval = null;
+    gravityInterval = null; // Defined here, but initialized in MovableObject
 
     constructor(x, y) {
         super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
@@ -33,32 +33,54 @@ class ThrowableObject extends MovableObject {
         this.throw();
     }
 
+    /**
+     * Handles the movement and rotation animation of the bottle during throwing.
+     */
+    _animateThrowing() {
+        if (!this.isSplashing) {
+            this.x += 10;
+            this.playAnimation(this.IMAGES_ROTATION, 2);
+        }
+    }
+
+    /**
+     * Initiates the throwing action of the bottle, applying initial speed and gravity,
+     * and starting the throwing animation.
+     */
     throw() {
         this.speedY = 30;
-        this.applyGravity();
+        this.applyGravity(); // Inherited from MovableObject
 
         this.throwInterval = setInterval(() => {
-            if (!this.isSplashing) {
-                this.x += 10;
-                this.playAnimation(this.IMAGES_ROTATION, 2);
-            }
+            this._animateThrowing();
         }, 25);
     }
 
+    /**
+     * Handles the single frame update for the splash animation.
+     */
+    _updateSplashFrame() {
+        if (this.currentImage < this.IMAGES_SPLASH.length) {
+            let path = this.IMAGES_SPLASH[this.currentImage];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        } else {
+            clearInterval(this.splashInterval);
+            this.splashAnimationFinished = true;
+        }
+    }
+
+    /**
+     * Initiates the splash animation when the bottle hits something.
+     * Clears the throwing animation interval.
+     */
     splash() {
         this.isSplashing = true;
-        clearInterval(this.throwInterval);
-        
-        this.currentImage = 0;
+        clearInterval(this.throwInterval); // Stop bottle rotation
+
+        this.currentImage = 0; // Reset image index for splash animation
         this.splashInterval = setInterval(() => {
-            if (this.currentImage < this.IMAGES_SPLASH.length) {
-                let path = this.IMAGES_SPLASH[this.currentImage];
-                this.img = this.imageCache[path];
-                this.currentImage++;
-            } else {
-                clearInterval(this.splashInterval);
-                this.splashAnimationFinished = true;
-            }
+            this._updateSplashFrame();
         }, 80);
     }
 }

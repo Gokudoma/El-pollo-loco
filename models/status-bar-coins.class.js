@@ -1,11 +1,11 @@
 class StatusBarCoins extends DrawableObject {
     IMAGES_STATUSBAR = [
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png",
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png",
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/40.png",
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png",
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png",
-        "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
+        "img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
     ];
 
     percentage = 0;
@@ -13,19 +13,28 @@ class StatusBarCoins extends DrawableObject {
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUSBAR);
-        this.x = 40;
-        this.y = 100;
+        this.x = 40; // Same X position as bottles
+        this.y = 100; // Adjusted Y position to be below bottles
         this.height = 60;
         this.width = 200;
-        this.setPercentage(0);
+        this.setPercentage(0); // Initialize with 0%
     }
 
+    /**
+     * Sets the percentage value for the status bar and updates the displayed image.
+     * @param {number} percentage - The current percentage (0-100).
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
+        // Determines the correct image path based on the percentage
         let path = this.IMAGES_STATUSBAR[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * Resolves the index of the image in IMAGES_STATUSBAR based on the current percentage.
+     * @returns {number} The index of the image to display.
+     */
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;

@@ -17,15 +17,24 @@ class StatusBarEndboss extends DrawableObject {
         this.y = 0;
         this.height = 60;
         this.width = 200;
-        this.setPercentage(100);
+        this.setPercentage(100); // Initialize with 100%
     }
 
+    /**
+     * Sets the percentage value for the status bar and updates the displayed image.
+     * @param {number} percentage - The current percentage (0-100).
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
+        // Determines the correct image path based on the percentage
         let path = this.IMAGES_STATUSBAR[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }
 
+    /**
+     * Resolves the index of the image in IMAGES_STATUSBAR based on the current percentage.
+     * @returns {number} The index of the image to display.
+     */
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;
