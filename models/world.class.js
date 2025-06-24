@@ -44,6 +44,13 @@ class World {
         this.character.animate();
         this.levelSound.loop = true;
         this.chickenSound.loop = true;
+        this._initAudioVolume();
+    }
+
+    /**
+     * Initializes the volume for all audio elements.
+     */
+    _initAudioVolume() {
         if (typeof currentVolume !== 'undefined') {
             this.levelSound.volume = currentVolume;
             this.chickenSound.volume = currentVolume;
@@ -102,17 +109,23 @@ class World {
     checkThrowObjects() {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
         const canThrow = this.keyboard.SPACE && this.character.bottles > 0 &&
-                             !this.character.isDead() && !this.isGameOver &&
-                             !this.isGameWon && timePassed > this.bottleCooldown;
+                             !this.character.isDead() && !this.isGameWon && timePassed > this.bottleCooldown;
 
         if (canThrow) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
-            bottle.setWorld(this);
-            this.throwableObjects.push(bottle);
-            this.character.bottles--;
-            this.statusBarBottles.setPercentage(this.character.bottles * 20);
+            this._createAndThrowBottle();
             this.lastBottleThrow = new Date().getTime();
         }
+    }
+
+    /**
+     * Creates a new throwable bottle and updates character/UI.
+     */
+    _createAndThrowBottle() {
+        let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+        bottle.setWorld(this);
+        this.throwableObjects.push(bottle);
+        this.character.bottles--;
+        this.statusBarBottles.setPercentage(this.character.bottles * 20);
     }
 
     /**
@@ -138,12 +151,19 @@ class World {
         if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
             bottle.splash();
             enemy.hit();
-            this.brokenBottleSound.currentTime = 0;
-            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
-                this.brokenBottleSound.play();
-            }
+            this._playBrokenBottleSound();
             this._updateEndbossHealth(enemy);
             this._playEndbossDeathSound(enemy);
+        }
+    }
+
+    /**
+     * Plays the broken bottle sound.
+     */
+    _playBrokenBottleSound() {
+        this.brokenBottleSound.currentTime = 0;
+        if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
+            this.brokenBottleSound.play();
         }
     }
 
@@ -201,17 +221,36 @@ class World {
      * Checks for all types of collisions in the game.
      */
     checkCollisions() {
+        this._checkEnemyCollisions();
+        this._checkBottleCollisions();
+        this._checkCoinCollisions();
+    }
+
+    /**
+     * Checks collisions between character, throwable objects, and enemies.
+     */
+    _checkEnemyCollisions() {
         this.level.enemies.forEach(enemy => {
-            this._handleCharacterEnemyCollision(enemy); // Corrected from _handleCharacterEnemyEnemyCollision
+            this._handleCharacterEnemyCollision(enemy);
             this.throwableObjects.forEach(bottle => {
                 this._handleBottleEnemyCollision(bottle, enemy);
             });
         });
+    }
 
+    /**
+     * Checks collisions between character and collectible bottles.
+     */
+    _checkBottleCollisions() {
         this.level.bottles.forEach((bottle, index) => {
             this._handleCharacterBottleCollision(bottle, index);
         });
+    }
 
+    /**
+     * Checks collisions between character and collectible coins.
+     */
+    _checkCoinCollisions() {
         this.level.coins.forEach((coin, index) => {
             this._handleCharacterCoinCollision(coin, index);
         });
@@ -223,7 +262,8 @@ class World {
      */
     _updateChickenSound(foundProximityEnemy) {
         const shouldPlay = foundProximityEnemy && !this.chickenSoundPlaying && !isMutedGlobally;
-        const shouldPause = (!foundProximityEnemy && this.chickenSoundPlaying) || (isMutedGlobally && this.chickenSoundPlaying);
+        const shouldPause = (!foundProximityEnemy && this.chickenSoundPlaying) ||
+                            (isMutedGlobally && this.chickenSoundPlaying);
 
         if (shouldPlay) {
             this.chickenSound.play();
@@ -278,11 +318,26 @@ class World {
      */
     showLevelCompleteScreen() {
         this.isGameOver = true;
+        this._pauseAllGameSounds();
+        this._hideGameElementsAndShowScreen('levelCompleteScreen');
+    }
+
+    /**
+     * Pauses all game-related sounds.
+     */
+    _pauseAllGameSounds() {
         this.levelSound.pause();
         this.chickenSound.pause();
         this.chickenSound.currentTime = 0;
         this.chickenSoundPlaying = false;
-        document.getElementById('levelCompleteScreen').classList.remove('d-none');
+    }
+
+    /**
+     * Hides main game canvas and controls, shows a specific screen.
+     * @param {string} screenId - The ID of the screen element to show.
+     */
+    _hideGameElementsAndShowScreen(screenId) {
+        document.getElementById(screenId).classList.remove('d-none');
         document.getElementById('canvas').classList.add('d-none');
         document.querySelector('.mobile-controls-wrapper').classList.add('d-none');
         document.querySelector('.controls-container').classList.add('d-none');
@@ -299,6 +354,7 @@ class World {
         this.throwableObjects = [];
         this.bossSoundPlayed = false;
         this.camera_x = 0;
+        this.gamePaused = false;
     }
 
     /**
@@ -317,23 +373,40 @@ class World {
     goToNextLevel() {
         this._resetForNextLevel();
         this._updateStatusBarsForNextLevel();
+        this._transitionToGameView();
+        this._playLevelMusic();
+        this._checkOrientationAndResumeGame();
+    }
+
+    /**
+     * Hides the level complete screen and shows the game canvas.
+     */
+    _transitionToGameView() {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
-        
-        this.levelSound.pause(); 
-        this.levelSound.currentTime = 0; 
+    }
 
+    /**
+     * Plays the level background music if not muted.
+     */
+    _playLevelMusic() {
+        this.levelSound.pause();
+        this.levelSound.currentTime = 0;
         if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
             this.levelSound.play();
             this.levelSoundPlaying = true;
         } else {
             this.levelSoundPlaying = false;
         }
+    }
 
+    /**
+     * Checks screen orientation and resumes game if applicable.
+     */
+    _checkOrientationAndResumeGame() {
         if (typeof checkOrientation === 'function') {
             checkOrientation();
         }
-        this.gamePaused = false;
     }
 
     /**
@@ -342,14 +415,8 @@ class World {
     gameWon() {
         this.isGameWon = true;
         this.isGameOver = true;
-        this.levelSound.pause();
-        this.chickenSound.pause();
-        this.chickenSound.currentTime = 0;
-        this.chickenSoundPlaying = false;
-        document.getElementById('gameWonScreen').classList.remove('d-none');
-        document.getElementById('canvas').classList.add('d-none');
-        document.querySelector('.mobile-controls-wrapper').classList.add('d-none');
-        document.querySelector('.controls-container').classList.add('d-none');
+        this._pauseAllGameSounds();
+        this._hideGameElementsAndShowScreen('gameWonScreen');
     }
 
     /**
@@ -357,14 +424,8 @@ class World {
      */
     endGame() {
         this.isGameOver = true;
-        this.levelSound.pause();
-        this.chickenSound.pause();
-        this.chickenSound.currentTime = 0;
-        this.chickenSoundPlaying = false;
-        document.getElementById('gameOverScreen').classList.remove('d-none');
-        document.getElementById('canvas').classList.add('d-none');
-        document.querySelector('.mobile-controls-wrapper').classList.add('d-none');
-        document.querySelector('.controls-container').classList.add('d-none');
+        this._pauseAllGameSounds();
+        this._hideGameElementsAndShowScreen('gameOverScreen');
     }
 
     /**
@@ -382,14 +443,14 @@ class World {
      * @param {DrawableObject} mo - The movable or drawable object to draw.
      */
     addToMap(mo) {
-        if (mo && mo.otherDirection) {
+        if (!mo) return;
+
+        if (mo.otherDirection) {
             this.flipImage(mo);
         }
-        if (mo) {
-            mo.draw(this.ctx);
-            // mo.drawFrame(this.ctx); // Uncomment for collision box debugging
-        }
-        if (mo && mo.otherDirection) {
+        mo.draw(this.ctx);
+        // mo.drawFrame(this.ctx); // Uncomment for collision box debugging
+        if (mo.otherDirection) {
             this.flipImageBack(mo);
         }
     }
@@ -418,32 +479,56 @@ class World {
      * The main drawing loop that clears the canvas and redraws all game elements.
      */
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this._clearCanvas();
+        
+        // Save the context state before transformations for drawing fixed UI elements
+        this.ctx.save(); 
+        
+        this._drawBackgroundAndDynamicElements(); // Draws with camera translation
+        
+        // Restore the context to draw fixed UI elements without camera influence
+        this.ctx.restore(); 
+        this._drawFixedUIElements(); // Draws without camera translation
 
-        // Draw background and objects with camera translation
+        this._requestNextFrame();
+    }
+
+    /**
+     * Clears the entire canvas.
+     */
+    _clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    /**
+     * Draws background objects, character, and dynamic game elements with camera translation.
+     */
+    _drawBackgroundAndDynamicElements() {
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
-
-        // Draw fixed UI elements (status bars) without camera translation
-        this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusBar);
-        this.addToMap(this.statusBarBottles);
-        this.addToMap(this.statusBarCoins);
-        this.addToMap(this.endbossHealthBar);
-        this.ctx.translate(this.camera_x, 0);
-
-        // Draw dynamic game elements with camera translation
-        this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.throwableObjects);
+        this.addToMap(this.character); // Character is also a dynamic element
+    }
 
-        // Restore camera translation
-        this.ctx.translate(-this.camera_x, 0);
+    /**
+     * Draws fixed UI elements (status bars) without camera translation.
+     * These elements remain in place on the screen.
+     */
+    _drawFixedUIElements() {
+        this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarBottles);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.endbossHealthBar);
+    }
 
-        // Request next animation frame
+    /**
+     * Requests the next animation frame for continuous drawing.
+     */
+    _requestNextFrame() {
         let self = this;
         requestAnimationFrame(function() {
             self.draw();
