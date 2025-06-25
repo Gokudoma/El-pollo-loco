@@ -6,79 +6,39 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/vnd.icon" href="./img/6_salsa_bottle/salsa_bottle.png">
     <title>El Pollo Loco</title>
-
-    <!-- Core Game Classes - Order matters for dependencies -->
-    <script src="models/drawable-object.class.js"></script>
-    <script src="models/movable-object.class.js"></script>
-    <script src="models/keyboard.class.js"></script>
-    <script src="models/level.class.js"></script>
-    <script src="models/background-object.class.js"></script>
-
-    <!-- Character and Enemy Classes -->
-    <script src="models/character.class.js"></script>
-    <script src="models/chicken.class.js"></script>
-    <script src="models/chicken-small.class.js"></script>
-    <script src="models/endboss.class.js"></script>
-    <script src="models/clouds.class.js"></script>
-    <script src="models/throwable-object.class.js"></script>
-    <script src="models/bottle.class.js"></script>
-    <script src="models/coin.class.js"></script>
-
-    <!-- UI/Status Bar Classes -->
-    <script src="models/status-bar.class.js"></script>
-    <script src="models/status-bar-bottles.class.js"></script>
-    <script src="models/status-bar-coins.class.js"></script>
-    <script src="models/status-bar-endboss.class.js"></script>
-
-    <!-- Level Definitions -->
-    <script src="levels/level1.js"></script>
-    <script src="levels/level2.js"></script>
-    <script src="levels/level3.js"></script>
-
-    <!-- World Class (depends on all above) -->
-    <script src="models/world.class.js"></script>
 </head>
 
 <body>
-    <!-- Main game container -->
     <div class="game-wrapper">
-        <!-- Main title, initially hidden -->
         <h1 class="d-none">El Pollo Loco</h1>
 
-        <!-- Start Screen -->
         <div id="startScreen" class="start-screen">
             <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startbildschirm">
             <button onclick="startGame()">Spiel starten</button>
         </div>
 
-        <!-- Game Canvas where the game is rendered -->
         <canvas id="canvas" width="720" height="480" class="d-none">
         </canvas>
 
-        <!-- Game Over Screen -->
         <div id="gameOverScreen" class="game-over-screen d-none">
             <img src="img/You won, you lost/Game over A.png" alt="Game Over">
             <button onclick="restartGame()">Neues Spiel</button>
         </div>
 
-        <!-- Level Complete Screen -->
         <div id="levelCompleteScreen" class="level-complete-screen d-none">
             <img src="img/You won, you lost/You Win A.png" alt="Level Abgeschlossen">
             <button onclick="goToNextLevelFromButton()">Nächstes Level</button>
         </div>
 
-        <!-- Game Won Screen (when all levels are completed) -->
         <div id="gameWonScreen" class="game-won-screen d-none">
             <img src="img/You won, you lost/You won A.png" alt="Spiel Gewonnen">
             <button onclick="restartGame()">Neues Spiel</button>
         </div>
 
-        <!-- Orientation Message for mobile devices in portrait mode -->
         <div id="orientationMessage" class="orientation-message d-none">
             <p>Bitte drehen Sie Ihr Gerät, um das Spiel im Querformat zu spielen!</p>
         </div>
 
-        <!-- Mobile Controls Wrapper -->
         <div class="mobile-controls-wrapper d-none">
             <div class="mobile-controls-left">
                 <button id="btnLeft" class="mobile-btn">◀</button>
@@ -93,7 +53,6 @@
         </div>
     </div>
 
-    <!-- Desktop Controls and Settings Container -->
     <div class="controls-container">
         <button onclick="toggleFullscreen()" id="fullscreenBtn">Vollbild</button>
         <button onclick="toggleMute()" id="muteBtn">Sound Mute</button>
@@ -104,7 +63,6 @@
         </div>
     </div>
 
-    <!-- Explanation Modal (initially hidden) -->
     <div id="explanationModal" class="explanation-modal d-none">
         <div class="explanation-modal-content">
             <span class="close-button" onclick="toggleExplanationModal()">&times;</span>
@@ -122,13 +80,40 @@
         </div>
     </div>
 
-    <!-- Main game logic script -->
+    <script src="models/drawable-object.class.js"></script>
+    <script src="models/movable-object.class.js"></script>
+    <script src="models/keyboard.class.js"></script>
+    <script src="models/level.class.js"></script>
+    <script src="models/background-object.class.js"></script>
+
+    <script src="models/character.class.js"></script>
+    <script src="models/chicken.class.js"></script>
+    <script src="models/chicken-small.class.js"></script>
+    <script src="models/endboss.class.js"></script>
+    <script src="models/clouds.class.js"></script>
+    <script src="models/throwable-object.class.js"></script>
+    <script src="models/bottle.class.js"></script>
+    <script src="models/coin.class.js"></script>
+
+    <script src="models/status-bar.class.js"></script>
+    <script src="models/status-bar-bottles.class.js"></script>
+    <script src="models/status-bar-coins.class.js"></script>
+    <script src="models/status-bar-endboss.class.js"></script>
+
+    <script src="levels/level1.js"></script>
+    <script src="levels/level2.js"></script>
+    <script src="levels/level3.js"></script>
+
+    <script src="models/collisionManager.class.js"></script>
+
+    <script src="models/world.class.js"></script>
+
     <script src="js/game_settings.js"></script>
     <script src="js/ui_management.js"></script>
     <script src="js/fullscreen_handler.js"></script>
     <script src="js/sound_manager.js"></script>
     <script src="js/input_handler.js"></script>
     <script src="js/game_state.js"></script>
-    <script src="js/main.js"></script> </body>
+    <script src="js/main.js"></script>
 </body>
 </html>
