@@ -270,7 +270,7 @@ button:active {
 }
 
 .d-none {
-    display: none !important;
+    display: none;
 }
 
 .mobile-controls-wrapper {
