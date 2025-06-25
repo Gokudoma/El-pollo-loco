@@ -1,5 +1,3 @@
-// js/ui_management.js
-
 /**
  * Checks if the current device is a touch device.
  * @returns {boolean} True if it's a touch device, false otherwise.

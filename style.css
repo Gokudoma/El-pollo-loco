@@ -343,9 +343,35 @@ button:active {
     max-width: 80%;
 }
 
-@media (max-width: 769px) {
-    h1 {
-        font-size: 2em;
+@media (max-width: 770px) and (orientation: portrait) {
+    .game-wrapper,
+    .mobile-controls-wrapper,
+    .controls-container,
+    .start-screen,
+    .game-over-screen,
+    .level-complete-screen,
+    .game-won-screen {
+        display: none !important;
+    }
+    .orientation-message {
+        display: flex !important;
+    }
+}
+
+@media (max-height: 600px) {
+    .game-over-screen img,
+    .start-screen img,
+    .level-complete-screen img,
+    .game-won-screen img {
+        margin-bottom: 10px;
+        max-height: 40vh;
+    }
+    .game-over-screen button,
+    .start-screen button,
+    .level-complete-screen button,
+    .game-won-screen button {
+        font-size: 20px;
+        padding: 12px 25px;
     }
 }
 
@@ -403,37 +429,5 @@ button:active {
     }
     .orientation-message {
         font-size: 1.1em;
-    }
-}
-
-@media (max-width: 770px) and (orientation: portrait) {
-    .game-wrapper,
-    .mobile-controls-wrapper,
-    .controls-container,
-    .start-screen,
-    .game-over-screen,
-    .level-complete-screen,
-    .game-won-screen {
-        display: none !important;
-    }
-    .orientation-message {
-        display: flex !important;
-    }
-}
-
-@media (max-height: 600px) {
-    .game-over-screen img,
-    .start-screen img,
-    .level-complete-screen img,
-    .game-won-screen img {
-        margin-bottom: 10px;
-        max-height: 40vh;
-    }
-    .game-over-screen button,
-    .start-screen button,
-    .level-complete-screen button,
-    .game-won-screen button {
-        font-size: 20px;
-        padding: 12px 25px;
     }
 }
