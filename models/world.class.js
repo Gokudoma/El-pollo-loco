@@ -451,6 +451,8 @@ class World {
 
     /**
      * Flips the image horizontally for drawing.
+     * This method saves the current canvas state, translates the origin to the right edge of the object,
+     * scales the x-axis by -1 to flip, and then adjusts the object's x-coordinate for drawing.
      * @param {MovableObject} mo - The movable object to flip.
      */
     flipImage(mo) {
@@ -461,7 +463,8 @@ class World {
     }
 
     /**
-     * Restores the canvas context after an image flip.
+     * Restores the canvas context after a horizontal flip.
+     * This method reverts the object's x-coordinate back to its original value and restores the canvas state.
      * @param {MovableObject} mo - The movable object that was flipped.
      */
     flipImageBack(mo) {
