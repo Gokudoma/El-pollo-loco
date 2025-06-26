@@ -182,22 +182,47 @@ function toggleExplanationModal() {
     const elements = getGameUIElements();
 
     if (elements.explanationModal.classList.contains('d-none')) {
+        // Opening modal
         hideAllGameElements(elements);
         elements.explanationModal.classList.remove('d-none');
-        if (typeof pauseGameSounds === 'function') {
-            pauseGameSounds();
-        }
         if (world) {
             world.gamePaused = true;
+            pauseGameSounds();
         }
     } else {
+        // Closing modal
         elements.explanationModal.classList.add('d-none');
-        if (typeof resumeGameSounds === 'function') {
-            resumeGameSounds();
-        }
         if (world) {
             world.gamePaused = false;
+            resumeGameSounds();
         }
         checkOrientation();
+    }
+    updatePausePlayButton(); // Update the pause/play button text
+}
+
+/**
+ * Toggles the game's pause state and updates the pause/play button text.
+ */
+function togglePausePlay() {
+    if (!world) return; // Ensure world is initialized
+
+    world.gamePaused = !world.gamePaused;
+
+    if (world.gamePaused) {
+        pauseGameSounds();
+    } else {
+        resumeGameSounds();
+    }
+    updatePausePlayButton();
+}
+
+/**
+ * Updates the text of the pause/play button based on the game's pause state.
+ */
+function updatePausePlayButton() {
+    const pausePlayBtn = document.getElementById('pausePlayBtn');
+    if (pausePlayBtn && world) {
+        pausePlayBtn.innerText = world.gamePaused ? 'Play' : 'Pause';
     }
 }

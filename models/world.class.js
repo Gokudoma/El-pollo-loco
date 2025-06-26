@@ -49,6 +49,7 @@ class World {
         this.levelSound.loop = true;
         this.chickenSound.loop = true;
         this._initAudioVolume();
+        updatePausePlayButton(); // Initial update of the pause/play button
     }
 
     /**
@@ -262,8 +263,10 @@ class World {
      */
     showLevelCompleteScreen() {
         this.isGameOver = true;
+        this.gamePaused = true; // Pause the game
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('levelCompleteScreen');
+        updatePausePlayButton(); // Update the pause/play button text
     }
 
     /**
@@ -301,7 +304,7 @@ class World {
         this.throwableObjects = [];
         this.bossSoundPlayed = false;
         this.camera_x = 0;
-        this.gamePaused = false;
+        this.gamePaused = false; // Reset pause state for next level
     }
 
     /**
@@ -324,6 +327,7 @@ class World {
         this._transitionToGameView();
         this._playLevelMusic();
         this._checkOrientationAndResumeGame();
+        updatePausePlayButton(); // Update the pause/play button text
     }
 
     /**
@@ -366,8 +370,10 @@ class World {
     gameWon() {
         this.isGameWon = true;
         this.isGameOver = true;
+        this.gamePaused = true; // Pause the game
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameWonScreen');
+        updatePausePlayButton(); // Update the pause/play button text
     }
 
     /**
@@ -375,8 +381,10 @@ class World {
      */
     endGame() {
         this.isGameOver = true;
+        this.gamePaused = true; // Pause the game
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameOverScreen');
+        updatePausePlayButton(); // Update the pause/play button text
     }
 
     /**
