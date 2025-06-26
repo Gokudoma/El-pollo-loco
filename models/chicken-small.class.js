@@ -39,8 +39,9 @@ class ChickenSmall extends MovableObject {
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
-        this._initializePosition(x);
+        this._initializePosition(x); // Calls the helper for position
         this.speed = 0.2 + Math.random() * 0.3;
+        this.deadTime = 0; // Initialize deadTime property
 
         this.animate();
     }
@@ -55,6 +56,7 @@ class ChickenSmall extends MovableObject {
             this.moveLeft();
             this.otherDirection = false;
         } else if (this.isDead()) {
+            // Play death animation if chicken is dead
             this.playAnimation(this.IMAGES_DEAD);
         }
     }
@@ -66,6 +68,7 @@ class ChickenSmall extends MovableObject {
      */
     _animateWalking() {
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
+            // Only animate if the game is not over, not won, and chicken is not dead
             this.playAnimation(this.IMAGES_WALKING);
         }
     }
@@ -74,7 +77,10 @@ class ChickenSmall extends MovableObject {
      * Starts the animation loops for movement and visual animation.
      */
     animate() {
+        // Interval for movement logic (60 FPS)
         setInterval(() => this._animateMovement(), 1000 / 60);
+
+        // Interval for walking animation (25 ms per frame)
         setInterval(() => this._animateWalking(), 25);
     }
 }

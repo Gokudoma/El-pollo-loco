@@ -33,22 +33,42 @@ class CollisionManager {
     }
 
     /**
-     * Handles character-enemy collision, including character damage and game over.
-     * Damage is applied with a cooldown of 500ms.
+     * Handles character-enemy collision logic.
+     * If the character jumps on a Chicken or ChickenSmall from above, the enemy dies,
+     * and the character takes no damage and bounces up.
+     * For other enemy types or collision angles, the character takes damage with a cooldown.
      * @param {MovableObject} enemy - The enemy object involved in the collision.
      * @private
      */
     _handleCharacterEnemyCollision(enemy) {
-        const damageCooldown = 500; // Cooldown in milliseconds for taking damage
+        const damageCooldown = 500; // Cooldown in milliseconds for character taking damage
         const currentTime = new Date().getTime();
 
         if (this.world.character.isColliding(enemy) && !enemy.isDead()) {
-            // Check if enough time has passed since the last hit
-            if (currentTime - this.world.character.lastHit > damageCooldown) {
-                this.world.character.hit(); // This will update character.lastHit
-                this.world.statusBar.setPercentage(this.world.character.energy);
-                if (this.world.character.isDead()) {
-                    this.world.endGame();
+            // Check if the character is jumping on top of a chicken or small chicken
+            if ((enemy instanceof Chicken || enemy instanceof ChickenSmall) &&
+                this.world.character.isAboveGround() && // Character is in the air
+                this.world.character.speedY < 0 &&     // Character is falling downwards
+                this.world.character.y + this.world.character.height - this.world.character.offset.bottom < enemy.y + enemy.offset.top + (enemy.height / 2)) { // Character's bottom half hits enemy's top half
+                
+                enemy.energy = 0; // Instantly kill the chicken
+                enemy.deadTime = currentTime; // Set dead time for the chicken
+                this.world.character.speedY = 20; // Make character bounce upwards
+
+                // Stop chicken sound if it's currently playing due to this chicken
+                if (this.world.chickenSoundPlaying) {
+                    this.world.chickenSound.pause();
+                    this.world.chickenSound.currentTime = 0;
+                    this.world.chickenSoundPlaying = false;
+                }
+            } else {
+                // Standard collision: character takes damage if enough time has passed
+                if (currentTime - this.world.character.lastHit > damageCooldown) {
+                    this.world.character.hit(); // This applies damage to character
+                    this.world.statusBar.setPercentage(this.world.character.energy);
+                    if (this.world.character.isDead()) {
+                        this.world.endGame();
+                    }
                 }
             }
         }
@@ -92,7 +112,6 @@ class CollisionManager {
             this.world.character.bottles++;
             this.world.level.bottles.splice(index, 1);
             this.world.statusBarBottles.setPercentage(this.world.character.bottles * 20);
-            // Play collect bottle sound
             if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
                 this.world.collectBottleSound.currentTime = 0;
                 this.world.collectBottleSound.play();
@@ -123,7 +142,6 @@ class CollisionManager {
             this.world.level.coins.splice(index, 1);
             let collectedCoinPercentage = (this.world.character.coins / this.world.level.initialCoinCount) * 100;
             this.world.statusBarCoins.setPercentage(collectedCoinPercentage);
-            // Play collect coin sound
             if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
                 this.world.collectCoinSound.currentTime = 0;
                 this.world.collectCoinSound.play();

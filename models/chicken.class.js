@@ -41,6 +41,7 @@ class Chicken extends MovableObject {
 
         this._initializePosition(x);
         this.speed = 0.15 + Math.random() * 0.4;
+        this.deadTime = 0; // Initialize deadTime property
 
         this.animate();
     }

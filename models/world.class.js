@@ -25,8 +25,8 @@ class World {
     chickenSound = new Audio('audio/chicken.mp3');
     chickenSoundPlaying = false;
     brokenBottleSound = new Audio('audio/brokenBottle.mp3');
-    collectCoinSound = new Audio('audio/collectCoin.mp3'); // New sound for coin collection
-    collectBottleSound = new Audio('audio/collectBottle.mp3'); // New sound for bottle collection
+    collectCoinSound = new Audio('audio/collectCoin.mp3');
+    collectBottleSound = new Audio('audio/collectBottle.mp3');
     gamePaused = false;
     levelDisplayElement; // Reference to the HTML element displaying the current level
 
@@ -43,7 +43,7 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.level = allLevels[this.currentLevelIndex];
-        this.levelDisplayElement = document.getElementById('levelDisplay'); // Get reference to level display
+        this.levelDisplayElement = document.getElementById('levelDisplay');
 
         this.collisionManager = new CollisionManager(this);
         this.draw();
@@ -53,8 +53,8 @@ class World {
         this.levelSound.loop = true;
         this.chickenSound.loop = true;
         this._initAudioVolume();
-        updatePausePlayButton(); // Initial update of the pause/play button
-        this._updateLevelDisplay(); // Initial update of level display
+        updatePausePlayButton();
+        this._updateLevelDisplay();
     }
 
     /**
@@ -67,8 +67,8 @@ class World {
             this.chickenSound.volume = currentVolume;
             this.chickenBossDieSound.volume = currentVolume;
             this.brokenBottleSound.volume = currentVolume;
-            this.collectCoinSound.volume = currentVolume; // Set volume for new coin sound
-            this.collectBottleSound.volume = currentVolume; // Set volume for new bottle sound
+            this.collectCoinSound.volume = currentVolume;
+            this.collectBottleSound.volume = currentVolume;
         }
     }
 
@@ -228,10 +228,22 @@ class World {
     }
 
     /**
-     * Removes dead enemies from the level's enemy array.
+     * Removes dead enemies from the level's enemy array after a delay for death animation.
      */
     cleanupDeadEnemies() {
-        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDead());
+        const currentTime = new Date().getTime();
+        this.level.enemies = this.level.enemies.filter(enemy => {
+            // Keep enemies that are not dead
+            if (!enemy.isDead()) {
+                return true;
+            }
+            // Keep dead enemies for 1500ms to show death animation
+            if (currentTime - enemy.deadTime < 1500) {
+                return true;
+            }
+            // Remove enemies after the death animation duration
+            return false;
+        });
     }
 
     /**
@@ -298,7 +310,7 @@ class World {
         document.getElementById('canvas').classList.add('d-none');
         document.querySelector('.mobile-controls-wrapper').classList.add('d-none');
         document.querySelector('.controls-container').classList.add('d-none');
-        this.levelDisplayElement.classList.add('d-none'); // Hide level display
+        this.levelDisplayElement.classList.add('d-none');
     }
 
     /**
@@ -347,7 +359,7 @@ class World {
     _transitionToGameView() {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
-        this.levelDisplayElement.classList.remove('d-none'); // Show level display
+        this.levelDisplayElement.classList.remove('d-none');
     }
 
     /**
