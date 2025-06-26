@@ -336,7 +336,7 @@ button:active {
     box-sizing: border-box;
     z-index: 102; /* Ensures it's on top of everything else */
     justify-content: center; /* Center content horizontally */
-    align-items: center;     /* Center content vertically */
+    align-items: center;    /* Center content vertically */
     text-align: center;
     flex-direction: column; /* Stack content (text, icon) vertically */
 }
@@ -355,7 +355,8 @@ button:active {
     #gameOverScreen,
     #levelCompleteScreen,
     #gameWonScreen,
-    #explanationModal {
+    #explanationModal,
+    #levelDisplay {
         display: none !important;
     }
 
@@ -386,7 +387,7 @@ button:active {
     .mobile-btn {
         width: 65px;
         height: 65px;
-        font-size: 2.2em;
+        font-size: 0.7em;
     }
     .game-over-screen button,
     .start-screen button,
@@ -435,6 +436,53 @@ button:active {
         padding: 10px 18px;
     }
     #orientationMessage {
+        font-size: 1.1em;
+    }
+}
+
+/* Styles for the level display */
+.level-display {
+    position: absolute;
+    top: 10px; /* Adjusted to be closer to top, preventing overlap with status bars in landscape */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for perfect centering */
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1.0em; /* Base font size */
+    font-weight: bold;
+    z-index: 10; /* Ensure it's above canvas */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.level-display span {
+    font-size: 1.0em;
+    color: rgb(244, 168, 26);
+    margin-left: 5px;
+}
+
+/* Make font size smaller on smaller screens */
+@media (max-width: 769px) {
+    .level-display {
+        font-size: 0.7em; /* Smaller font for tablets/smaller desktops */
+        top: 5px; /* Slightly higher on smaller screens */
+        padding: 6px 12px;
+    }
+    .level-display span {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .level-display {
+        font-size: 0.7em; /* Even smaller for mobile phones */
+        top: 2px; /* Even higher for mobile phones */
+        padding: 4px 10px;
+    }
+    .level-display span {
         font-size: 1.1em;
     }
 }

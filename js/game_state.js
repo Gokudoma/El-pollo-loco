@@ -7,6 +7,7 @@ function startGame() {
 
     document.getElementById('startScreen').classList.add('d-none'); // Hide the start screen
     document.getElementById('canvas').classList.remove('d-none'); // Show the game canvas
+    document.getElementById('levelDisplay').classList.remove('d-none'); // Show the level display
 
     if (world && world.levelSound) {
         playLevelSound();

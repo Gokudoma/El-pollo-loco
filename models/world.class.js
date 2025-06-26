@@ -26,6 +26,7 @@ class World {
     chickenSoundPlaying = false;
     brokenBottleSound = new Audio('audio/brokenBottle.mp3');
     gamePaused = false;
+    levelDisplayElement; // Reference to the HTML element displaying the current level
 
     collisionManager;
 
@@ -40,6 +41,7 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.level = allLevels[this.currentLevelIndex];
+        this.levelDisplayElement = document.getElementById('levelDisplay'); // Get reference to level display
 
         this.collisionManager = new CollisionManager(this);
         this.draw();
@@ -50,6 +52,7 @@ class World {
         this.chickenSound.loop = true;
         this._initAudioVolume();
         updatePausePlayButton(); // Initial update of the pause/play button
+        this._updateLevelDisplay(); // Initial update of level display
     }
 
     /**
@@ -263,10 +266,11 @@ class World {
      */
     showLevelCompleteScreen() {
         this.isGameOver = true;
-        this.gamePaused = true; // Pause the game
+        this.gamePaused = true;
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('levelCompleteScreen');
-        updatePausePlayButton(); // Update the pause/play button text
+        updatePausePlayButton();
+        this._updateLevelDisplay(); // Update level display on screen change
     }
 
     /**
@@ -290,6 +294,7 @@ class World {
         document.getElementById('canvas').classList.add('d-none');
         document.querySelector('.mobile-controls-wrapper').classList.add('d-none');
         document.querySelector('.controls-container').classList.add('d-none');
+        this.levelDisplayElement.classList.add('d-none'); // Hide level display
     }
 
     /**
@@ -304,7 +309,7 @@ class World {
         this.throwableObjects = [];
         this.bossSoundPlayed = false;
         this.camera_x = 0;
-        this.gamePaused = false; // Reset pause state for next level
+        this.gamePaused = false;
     }
 
     /**
@@ -327,7 +332,8 @@ class World {
         this._transitionToGameView();
         this._playLevelMusic();
         this._checkOrientationAndResumeGame();
-        updatePausePlayButton(); // Update the pause/play button text
+        updatePausePlayButton();
+        this._updateLevelDisplay(); // Update level display when moving to next level
     }
 
     /**
@@ -337,6 +343,7 @@ class World {
     _transitionToGameView() {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
         document.getElementById('canvas').classList.remove('d-none');
+        this.levelDisplayElement.classList.remove('d-none'); // Show level display
     }
 
     /**
@@ -370,10 +377,11 @@ class World {
     gameWon() {
         this.isGameWon = true;
         this.isGameOver = true;
-        this.gamePaused = true; // Pause the game
+        this.gamePaused = true;
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameWonScreen');
-        updatePausePlayButton(); // Update the pause/play button text
+        updatePausePlayButton();
+        this._updateLevelDisplay(); // Update level display on screen change
     }
 
     /**
@@ -381,15 +389,27 @@ class World {
      */
     endGame() {
         this.isGameOver = true;
-        this.gamePaused = true; // Pause the game
+        this.gamePaused = true;
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameOverScreen');
-        updatePausePlayButton(); // Update the pause/play button text
+        updatePausePlayButton();
+        this._updateLevelDisplay(); // Update level display on screen change
     }
 
     /**
-     * Iterates through an array of objects and draws each one to the map.
-     * @param {DrawableObject[]} objects - An array of drawable objects to add to the map.
+     * Updates the displayed level number in the UI.
+     * @private
+     */
+    _updateLevelDisplay() {
+        if (this.levelDisplayElement) {
+            // Adjust +1 because currentLevelIndex is 0-based
+            this.levelDisplayElement.querySelector('span').innerText = this.currentLevelIndex + 1;
+        }
+    }
+
+    /**
+     * Adds objects to the map for drawing.
+     * @param {DrawableObject[]} objects - An array of drawable objects to add.
      */
     addObjectsToMap(objects) {
         objects.forEach(o => {
@@ -398,8 +418,8 @@ class World {
     }
 
     /**
-     * Draws a single drawable object to the canvas, handling image flipping for movable objects.
-     * @param {DrawableObject} mo - The drawable object to add to the map.
+     * Adds a single drawable object to the map for drawing, handling image flipping if necessary.
+     * @param {DrawableObject} mo - The movable object to draw.
      */
     addToMap(mo) {
         if (!mo) return;
@@ -414,8 +434,8 @@ class World {
     }
 
     /**
-     * Prepares the canvas context to draw an image flipped horizontally.
-     * @param {MovableObject} mo - The movable object whose image will be flipped.
+     * Flips the image horizontally for drawing.
+     * @param {MovableObject} mo - The movable object to flip.
      */
     flipImage(mo) {
         this.ctx.save();
@@ -425,8 +445,8 @@ class World {
     }
 
     /**
-     * Restores the canvas context after a horizontal flip.
-     * @param {MovableObject} mo - The movable object whose image was flipped.
+     * Restores the canvas context after an image flip.
+     * @param {MovableObject} mo - The movable object that was flipped.
      */
     flipImageBack(mo) {
         mo.x = mo.x * -1;

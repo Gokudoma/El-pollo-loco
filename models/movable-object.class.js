@@ -21,12 +21,9 @@ class MovableObject extends DrawableObject {
 
     /**
      * Creates an instance of MovableObject.
-     * (Note: The constructor is implicitly defined here if not explicitly written,
-     * but we add a JSDoc for clarity.)
      */
     constructor() {
         super();
-        // Default constructor. Properties are defined directly on the class.
     }
 
     /**
@@ -50,6 +47,11 @@ class MovableObject extends DrawableObject {
      */
     applyGravity() {
         this.gravityInterval = setInterval(() => {
+            // Gravity should not apply if the game is paused
+            if (this.world && this.world.gamePaused) {
+                return;
+            }
+
             if (this._shouldStopGravity()) {
                 return;
             }
@@ -176,6 +178,9 @@ class MovableObject extends DrawableObject {
      * Sets `otherDirection` to false.
      */
     moveRight() {
+        if (this.world && this.world.gamePaused) {
+            return; // Do not move if game is paused
+        }
         this.x += this.speed;
         this.otherDirection = false;
     }
@@ -185,6 +190,9 @@ class MovableObject extends DrawableObject {
      * Sets `otherDirection` to true.
      */
     moveLeft() {
+        if (this.world && this.world.gamePaused) {
+            return; // Do not move if game is paused
+        }
         this.x -= this.speed;
         this.otherDirection = true;
     }
