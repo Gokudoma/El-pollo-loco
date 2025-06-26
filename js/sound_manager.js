@@ -4,10 +4,19 @@
  * Toggles the global mute state and updates related settings.
  */
 function toggleMute() {
-    isMutedGlobally = !isMutedGlobally; // Global variable from main.js
+    // isMutedGlobally comes from main.js, which has access to this global scope
+    isMutedGlobally = !isMutedGlobally; 
     saveSettings(); // From game_settings.js
     setGlobalVolume();
     updateMuteButton();
+    // When mute is toggled, ensure level sound reacts immediately
+    if (world && world.levelSound) {
+        if (isMutedGlobally) {
+            world.levelSound.pause();
+        } else if (!world.gamePaused) { // Only play if not globally muted AND not paused
+            world.levelSound.play();
+        }
+    }
 }
 
 /**
@@ -18,10 +27,10 @@ function updateMuteButton() {
     const muteMobileBtn = document.getElementById('muteMobileBtn');
 
     if (muteBtn) {
-        muteBtn.innerText = isMutedGlobally ? 'Sound An' : 'Sound Mute'; // Global variable from main.js
+        muteBtn.innerText = isMutedGlobally ? 'Sound On' : 'Sound Mute'; 
     }
     if (muteMobileBtn) {
-        muteMobileBtn.innerText = isMutedGlobally ? '🔇' : '🔊'; // Global variable from main.js
+        muteMobileBtn.innerText = isMutedGlobally ? '🔇' : '🔊'; 
     }
 }
 
@@ -32,9 +41,10 @@ function updateMuteButton() {
 function setupSingleVolumeSlider(sliderId) {
     const volumeSlider = document.getElementById(sliderId);
     if (volumeSlider) {
-        volumeSlider.value = currentVolume; // Global variable from main.js
+        // currentVolume comes from main.js, which has access to this global scope
+        volumeSlider.value = currentVolume; 
         volumeSlider.addEventListener('input', (e) => {
-            currentVolume = parseFloat(e.target.value); // Global variable from main.js
+            currentVolume = parseFloat(e.target.value); 
             saveSettings(); // From game_settings.js
             setGlobalVolume();
         });
@@ -69,12 +79,14 @@ function setSoundVolume(sound, volumeToSet) {
 function handleCharacterSoundPlayback(sound, soundPlayingProp, conditionFn) {
     if (!sound) return;
 
-    sound.volume = isMutedGlobally ? 0 : currentVolume; // Global variables from main.js
+    // isMutedGlobally and currentVolume come from main.js
+    sound.volume = isMutedGlobally ? 0 : currentVolume; 
 
-    if (isMutedGlobally && world.character[soundPlayingProp]) { // Global variable 'world' from main.js
+    // world comes from main.js
+    if (isMutedGlobally && world.character[soundPlayingProp]) { 
         sound.pause();
         world.character[soundPlayingProp] = false;
-    } else if (!isMutedGlobally && !world.character[soundPlayingProp] && conditionFn()) {
+    } else if (!isMutedGlobally && !world.character[soundPlayingProp] && conditionFn() && !world.gamePaused) { // Added !world.gamePaused
         sound.play();
         world.character[soundPlayingProp] = true;
     }
@@ -84,9 +96,10 @@ function handleCharacterSoundPlayback(sound, soundPlayingProp, conditionFn) {
  * Sets the global volume for all game sounds.
  */
 function setGlobalVolume() {
-    if (!world) return; // Global variable 'world' from main.js
+    // world, isMutedGlobally, currentVolume come from main.js
+    if (!world) return; 
 
-    const volumeToSet = isMutedGlobally ? 0 : currentVolume; // Global variables from main.js
+    const volumeToSet = isMutedGlobally ? 0 : currentVolume; 
 
     setSoundVolume(world.levelSound, volumeToSet);
     setSoundVolume(world.chickenSound, volumeToSet);
@@ -108,38 +121,55 @@ function setGlobalVolume() {
 }
 
 /**
- * Plays the level sound if the game world exists and is not muted.
+ * Plays the level background sound if the game world exists, is not muted, and not paused.
  */
 function playLevelSound() {
-    if (world && !isMutedGlobally) { // Global variables from main.js
+    if (world && world.levelSound && !isMutedGlobally && !world.gamePaused) { 
         world.levelSound.play();
         world.levelSoundPlaying = true;
     }
 }
 
 /**
- * Pauses all relevant game sounds.
+ * Pauses all relevant game sounds, typically when the game is paused or a modal is open.
+ * Ensures all looping and character sounds are stopped.
  */
 function pauseGameSounds() {
-    if (world) { // Global variable 'world' from main.js
-        world.gamePaused = true;
-        world.levelSound.pause();
-        world.chickenSound.pause();
-        if (world.character) {
-            world.character.stepsSound.pause();
-            world.character.snoringSound.pause();
+    if (world) { 
+        // No need to set world.gamePaused here, that's handled in ui_management and main
+        if (world.levelSound) {
+            world.levelSound.pause();
         }
+        if (world.chickenSound) {
+            world.chickenSound.pause();
+        }
+        if (world.character) {
+            if (world.character.stepsSound) {
+                world.character.stepsSound.pause();
+                world.character.stepsSoundPlaying = false; // Important to reset state
+            }
+            if (world.character.snoringSound) {
+                world.character.snoringSound.pause();
+                world.character.snoringSoundPlaying = false; // Important to reset state
+            }
+        }
+        // Add any other looping sounds that need to be paused
     }
 }
 
 /**
- * Resumes game sounds based on mute settings.
+ * Resumes game sounds based on the current mute settings and game pause state.
+ * Only non-muted and non-paused background/looping sounds will resume.
  */
 function resumeGameSounds() {
-    if (world) { // Global variable 'world' from main.js
-        world.gamePaused = false;
-        if (!isMutedGlobally) { // Global variable from main.js
-            world.levelSound.play();
+    if (world) { 
+        // No need to set world.gamePaused here, that's handled in ui_management and main
+        if (!isMutedGlobally && !world.gamePaused) { // Only play if not muted AND not paused
+            if (world.levelSound) {
+                world.levelSound.play();
+            }
         }
+        // Character sounds will be handled by setGlobalVolume / handleCharacterSoundPlayback 
+        // in the main loop when the game resumes and world.gamePaused becomes false.
     }
 }

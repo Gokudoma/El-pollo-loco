@@ -22,7 +22,6 @@ function startGame() {
 
     resetKeyboardState();
     checkOrientation(); // This call will now correctly show controls and canvas because gameHasStarted is true
-    activateFullscreenOnTouch();
 }
 
 /**
