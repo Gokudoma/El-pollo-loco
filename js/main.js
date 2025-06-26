@@ -8,19 +8,17 @@ let currentVolume;
 let gameHasStarted = false;
 
 /**
- * Initializes the game core components.
+ * Initializes the game core components that are needed before the game starts.
  * This function runs once when the DOM is fully loaded.
- * It sets up the game environment but does NOT start the game display.
+ * It sets up the canvas, loads settings, and prepares UI elements.
  */
 function init() {
     canvas = document.getElementById('canvas');
     loadSettings();
-    world = new World(canvas, keyboard);
-
     addMobileEventListeners();
     updateMuteButton();
     setupVolumeSlider();
-    setGlobalVolume();
+    setGlobalVolume(); // Set initial volume for potential sounds (e.g., if a start screen sound exists later)
 }
 
 // Event listeners for window resize and load
@@ -35,6 +33,7 @@ window.addEventListener('keydown', (event) => {
         handleKeyboardMovement(event, true);
     }
     if (event.keyCode == 13) { // Enter key
+        // Fullscreen toggle should work even if game hasn't started yet
         toggleFullscreen();
         event.preventDefault();
     }

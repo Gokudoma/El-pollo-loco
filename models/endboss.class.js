@@ -111,14 +111,17 @@ class Endboss extends MovableObject {
         }
 
         let distanceToCharacter = this.world.character.x - this.x;
+        console.log('Endboss: distanceToCharacter:', distanceToCharacter);
 
         if (distanceToCharacter < 0) { // Character is to the left, move left
             // To face LEFT (desired), given that 'otherDirection = true' makes it face left
             this.otherDirection = true;
+            console.log('Endboss: Moving left, setting otherDirection to TRUE (should face left)');
             this.moveLeft();
         } else if (distanceToCharacter > 0) { // Character is to the right, move right
             // To face RIGHT (desired), given that 'otherDirection = false' makes it face right
             this.otherDirection = false;
+            console.log('Endboss: Moving right, setting otherDirection to FALSE (should face right)');
             this.moveRight();
         }
     }
