@@ -85,6 +85,10 @@ canvas {
     flex-shrink: 0;
 }
 
+.volume-control {
+    margin-top: 15px;
+}
+
 .explanation-modal-content {
     background-color: #fefefe;
     margin: auto;
