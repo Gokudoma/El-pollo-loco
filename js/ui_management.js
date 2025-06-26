@@ -226,3 +226,25 @@ function updatePausePlayButton() {
         pausePlayBtn.innerText = world.gamePaused ? 'Play' : 'Pause';
     }
 }
+
+/**
+ * Attaches event listeners for the explanation modal to close it when clicking outside its content.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const explanationModal = document.getElementById('explanationModal');
+    const explanationModalContent = document.querySelector('.explanation-modal-content');
+
+    if (explanationModal && explanationModalContent) {
+        explanationModalContent.addEventListener('click', (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!explanationModal.classList.contains('d-none')) {
+                if (!explanationModalContent.contains(event.target) && event.target !== document.getElementById('explanationBtn') && event.target.className !== 'close-button') {
+                    toggleExplanationModal();
+                }
+            }
+        });
+    }
+});
