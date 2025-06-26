@@ -1,5 +1,6 @@
 /**
  * Checks if the current device is a touch device.
+ * @returns {boolean} True if it's a touch device, false otherwise.
  */
 function isTouchDevice() {
     return (('ontouchstart' in window) ||
@@ -9,6 +10,7 @@ function isTouchDevice() {
 
 /**
  * Retrieves all relevant game UI elements.
+ * @returns {Object} An object containing references to various UI elements.
  */
 function getGameUIElements() {
     return {
@@ -27,6 +29,7 @@ function getGameUIElements() {
 
 /**
  * Hides all main game UI elements by adding 'd-none' class.
+ * @param {Object} elements - An object containing references to UI elements.
  */
 function hideAllGameElements(elements) {
     elements.orientationMessage.classList.add('d-none');
@@ -44,6 +47,7 @@ function hideAllGameElements(elements) {
 
 /**
  * Shows the main game wrapper.
+ * @param {Object} elements - An object containing references to UI elements.
  */
 function showGameWrapper(elements) {
     elements.gameWrapper.classList.remove('d-none');
@@ -51,6 +55,9 @@ function showGameWrapper(elements) {
 
 /**
  * Handles the display logic when the explanation modal is open.
+ * @param {Object} elements - An object containing references to UI elements.
+ * @param {boolean} isModalOpen - True if the modal is currently open.
+ * @returns {boolean} True if the modal is displayed, false otherwise.
  */
 function handleModalOpen(elements, isModalOpen) {
     if (isModalOpen) {
@@ -62,15 +69,15 @@ function handleModalOpen(elements, isModalOpen) {
 
 /**
  * Handles the display of the orientation message for touch devices.
+ * @param {Object} elements - An object containing references to UI elements.
+ * @param {boolean} touchDevice - True if the device is a touch device.
+ * @returns {boolean} True if the orientation message is displayed, false otherwise.
  */
 function handleOrientationMessage(elements, touchDevice) {
-    // Show orientation message if in portrait AND it's a touch device.
-    // The CSS media query will handle hiding other elements automatically.
     if (window.innerHeight > window.innerWidth && touchDevice) {
-        elements.orientationMessage.classList.remove('d-none'); // Make sure JS removes the class
+        elements.orientationMessage.classList.remove('d-none');
         return true;
     } else {
-        // Ensure the orientation message is hidden if conditions are not met
         elements.orientationMessage.classList.add('d-none');
         return false;
     }
@@ -78,6 +85,9 @@ function handleOrientationMessage(elements, touchDevice) {
 
 /**
  * Sets the dimensions of the game wrapper based on fullscreen and touch device status.
+ * @param {Object} elements - An object containing references to UI elements.
+ * @param {boolean} touchDevice - True if the device is a touch device.
+ * @param {boolean} isFullscreen - True if the game is in fullscreen mode.
  */
 function setGameWrapperDimensions(elements, touchDevice, isFullscreen) {
     if (isFullscreen || touchDevice) {
@@ -93,6 +103,11 @@ function setGameWrapperDimensions(elements, touchDevice, isFullscreen) {
 
 /**
  * Displays the appropriate game screen and controls based on game state and device type.
+ * @param {Object} elements - An object containing references to UI elements.
+ * @param {boolean} gameIsRunning - True if the game is currently running (not game over or won).
+ * @param {boolean} touchDevice - True if the device is a touch device.
+ * @param {boolean} isFullscreen - True if the game is in fullscreen mode.
+ * @param {boolean} gameHasStarted - True if the game has been started at least once.
  */
 function displayGameElementsBasedOnState(elements, gameIsRunning, touchDevice, isFullscreen, gameHasStarted) {
     if (gameHasStarted) {
@@ -118,6 +133,9 @@ function displayGameElementsBasedOnState(elements, gameIsRunning, touchDevice, i
 
 /**
  * Displays mobile or desktop controls based on device type and fullscreen status.
+ * @param {Object} elements - An object containing references to UI elements.
+ * @param {boolean} touchDevice - True if the device is a touch device.
+ * @param {boolean} isFullscreen - True if the game is in fullscreen mode.
  */
 function displayControls(elements, touchDevice, isFullscreen) {
     if (touchDevice || isFullscreen) {
@@ -141,21 +159,17 @@ function checkOrientation() {
     const touchDevice = isTouchDevice();
     const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
 
-    // First, hide everything initially
     hideAllGameElements(elements);
 
-    // If explanation modal is open, only show it and stop further display logic
     if (isModalOpen) {
         elements.explanationModal.classList.remove('d-none');
         return;
     }
 
-    // If orientation message is needed, show it and stop further display logic
     if (handleOrientationMessage(elements, touchDevice)) {
         return;
     }
 
-    // If neither modal nor orientation message, show the game wrapper and its contents
     showGameWrapper(elements);
     setGameWrapperDimensions(elements, touchDevice, isFullscreen);
     displayGameElementsBasedOnState(elements, gameIsRunning, touchDevice, isFullscreen, gameHasStarted);

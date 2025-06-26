@@ -1,3 +1,7 @@
+/**
+ * Represents a general status bar, typically used for displaying health.
+ * Inherits from DrawableObject.
+ */
 class StatusBar extends DrawableObject {
     IMAGES_STATUSBAR = [
         "img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
@@ -10,6 +14,10 @@ class StatusBar extends DrawableObject {
 
     percentage = 100;
 
+    /**
+     * Creates an instance of StatusBar.
+     * Loads the status bar images and initializes the bar to 100%.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUSBAR);
@@ -17,7 +25,7 @@ class StatusBar extends DrawableObject {
         this.y = 0;
         this.height = 60;
         this.width = 200;
-        this.setPercentage(100); // Initialize with 100%
+        this.setPercentage(100);
     }
 
     /**

@@ -1,3 +1,7 @@
+/**
+ * Represents a status bar for displaying the number of collected coins.
+ * Inherits from DrawableObject.
+ */
 class StatusBarCoins extends DrawableObject {
     IMAGES_STATUSBAR = [
         "img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
@@ -10,14 +14,18 @@ class StatusBarCoins extends DrawableObject {
 
     percentage = 0;
 
+    /**
+     * Creates an instance of StatusBarCoins.
+     * Loads the status bar images and initializes the bar to 0%.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUSBAR);
-        this.x = 40; // Same X position as bottles
-        this.y = 100; // Adjusted Y position to be below bottles
+        this.x = 40;
+        this.y = 100;
         this.height = 60;
         this.width = 200;
-        this.setPercentage(0); // Initialize with 0%
+        this.setPercentage(0);
     }
 
     /**

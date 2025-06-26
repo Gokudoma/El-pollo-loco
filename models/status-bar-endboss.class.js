@@ -1,3 +1,7 @@
+/**
+ * Represents a status bar for displaying the endboss's health.
+ * Inherits from DrawableObject.
+ */
 class StatusBarEndboss extends DrawableObject {
     IMAGES_STATUSBAR = [
         "img/7_statusbars/2_statusbar_endboss/green/green0.png",
@@ -10,6 +14,10 @@ class StatusBarEndboss extends DrawableObject {
 
     percentage = 100;
 
+    /**
+     * Creates an instance of StatusBarEndboss.
+     * Loads the status bar images and initializes the bar to 100%.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUSBAR);
@@ -17,7 +25,7 @@ class StatusBarEndboss extends DrawableObject {
         this.y = 0;
         this.height = 60;
         this.width = 200;
-        this.setPercentage(100); // Initialize with 100%
+        this.setPercentage(100);
     }
 
     /**
@@ -26,7 +34,6 @@ class StatusBarEndboss extends DrawableObject {
      */
     setPercentage(percentage) {
         this.percentage = percentage;
-        // Determines the correct image path based on the percentage
         let path = this.IMAGES_STATUSBAR[this.resolveImageIndex()];
         this.img = this.imageCache[path];
     }

@@ -1,3 +1,7 @@
+/**
+ * Represents the main character (Pepe) in the game.
+ * Inherits from MovableObject and manages its animations, movements, and interactions.
+ */
 class Character extends MovableObject {
     height = 250;
     width = 150;
@@ -91,6 +95,10 @@ class Character extends MovableObject {
     snoringSound = new Audio('audio/snoring.mp3');
     snoringSoundPlaying = false;
 
+    /**
+     * Creates an instance of Character.
+     * Loads images, applies gravity, sets up initial sound loops and animation.
+     */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -109,6 +117,7 @@ class Character extends MovableObject {
 
     /**
      * Handles character movement based on keyboard input and updates walking sound.
+     * @private
      */
     _handleCharacterMovementAndSound() {
         if ((this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && !this.isAboveGround() && !this.isThrowing) {
@@ -130,6 +139,7 @@ class Character extends MovableObject {
 
     /**
      * Updates the last movement time if the character is actively moving or throwing.
+     * @private
      */
     _updateLastMoveTimestamp() {
         const isActuallyMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || this.world.keyboard.UP;
@@ -141,6 +151,7 @@ class Character extends MovableObject {
     /**
      * Applies movement logic and updates camera position.
      * This function runs at 60 FPS.
+     * @private
      */
     _applyMovementLogic() {
         if (this.world && !this.world.gamePaused) {
@@ -152,6 +163,7 @@ class Character extends MovableObject {
 
     /**
      * Handles the animation and sound for character death.
+     * @private
      */
     _handleDeathAnimation() {
         this.playAnimation(this.IMAGES_DEAD);
@@ -165,6 +177,7 @@ class Character extends MovableObject {
 
     /**
      * Plays the hurt animation and stops other sounds.
+     * @private
      */
     _playHurtAnimation() {
         this.playAnimation(this.IMAGES_HURT, 10);
@@ -174,6 +187,7 @@ class Character extends MovableObject {
 
     /**
      * Plays the jumping animation and stops other sounds.
+     * @private
      */
     _playJumpAnimation() {
         this.playAnimation(this.IMAGES_JUMPING, 3);
@@ -183,6 +197,7 @@ class Character extends MovableObject {
 
     /**
      * Plays the throwing animation and stops other sounds.
+     * @private
      */
     _playThrowingAnimation() {
         this.playAnimation(this.IMAGES_THROWING, 2);
@@ -195,6 +210,7 @@ class Character extends MovableObject {
      * @param {boolean} onGround - True if character is on the ground.
      * @param {boolean} isNotHurt - True if character is not hurt.
      * @returns {boolean} True if walking animation was played, false otherwise.
+     * @private
      */
     _playWalkingAnimation(onGround, isNotHurt) {
         if (onGround && (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) && isNotHurt) {
@@ -210,6 +226,7 @@ class Character extends MovableObject {
      * @param {boolean} onGround - True if character is on the ground.
      * @param {boolean} isNotHurt - True if character is not hurt.
      * @returns {boolean} True if sleeping animation was played, false otherwise.
+     * @private
      */
     _playSleepAnimation(onGround, isNotHurt) {
         if (onGround && !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT && isNotHurt && (new Date().getTime() - this.lastMoveTime > 8000)) {
@@ -226,6 +243,7 @@ class Character extends MovableObject {
      * @param {boolean} onGround - True if character is on the ground.
      * @param {boolean} isNotHurt - True if character is not hurt.
      * @returns {boolean} True if idle animation was played, false otherwise.
+     * @private
      */
     _playIdleAnimation(onGround, isNotHurt) {
         if (onGround && isNotHurt) {
@@ -240,6 +258,7 @@ class Character extends MovableObject {
     /**
      * Applies animation logic based on character's state.
      * This function runs at 80 ms interval.
+     * @private
      */
     _applyAnimationLogic() {
         if (this.isDead()) {
@@ -253,7 +272,7 @@ class Character extends MovableObject {
             if (this.isThrowing) return this._playThrowingAnimation();
             if (this._playWalkingAnimation(onGround, isNotHurt)) return;
             if (this._playSleepAnimation(onGround, isNotHurt)) return;
-            this._playIdleAnimation(onGround, isNotHurt); // Default idle state
+            this._playIdleAnimation(onGround, isNotHurt);
         }
     }
 
@@ -261,8 +280,8 @@ class Character extends MovableObject {
      * Starts the animation loops for movement and state.
      */
     animate() {
-        setInterval(() => this._applyMovementLogic(), 1000 / 60); // 60 FPS
-        setInterval(() => this._applyAnimationLogic(), 80); // Animation update
+        setInterval(() => this._applyMovementLogic(), 1000 / 60);
+        setInterval(() => this._applyAnimationLogic(), 80);
     }
 
     /**

@@ -1,3 +1,7 @@
+/**
+ * Represents a status bar for displaying the number of collected bottles.
+ * Inherits from DrawableObject.
+ */
 class StatusBarBottles extends DrawableObject {
     IMAGES_STATUSBAR = [
         "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
@@ -10,6 +14,10 @@ class StatusBarBottles extends DrawableObject {
 
     percentage = 0;
 
+    /**
+     * Creates an instance of StatusBarBottles.
+     * Loads the status bar images and initializes the bar to 0%.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES_STATUSBAR);
@@ -17,7 +25,7 @@ class StatusBarBottles extends DrawableObject {
         this.y = 50;
         this.height = 60;
         this.width = 200;
-        this.setPercentage(0); // Initialize with 0%
+        this.setPercentage(0);
     }
 
     /**

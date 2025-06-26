@@ -1,3 +1,7 @@
+/**
+ * Represents a small chicken enemy in the game.
+ * Inherits from MovableObject and handles its movement, animation, and death state.
+ */
 class ChickenSmall extends MovableObject {
     y = 370;
     height = 40;
@@ -16,6 +20,7 @@ class ChickenSmall extends MovableObject {
     /**
      * Initializes the x-position of the small chicken.
      * @param {number|null} x - The initial x-position, or null to generate randomly.
+     * @private
      */
     _initializePosition(x) {
         if (x !== null) {
@@ -25,12 +30,16 @@ class ChickenSmall extends MovableObject {
         }
     }
 
+    /**
+     * Creates an instance of ChickenSmall.
+     * @param {number|null} [x=null] - The initial x-coordinate of the chicken. If null, a random position is generated.
+     */
     constructor(x = null) {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
-        this._initializePosition(x); // Calls the helper for position
+        this._initializePosition(x);
         this.speed = 0.2 + Math.random() * 0.3;
 
         this.animate();
@@ -39,14 +48,13 @@ class ChickenSmall extends MovableObject {
     /**
      * Handles the movement logic for the small chicken.
      * Runs at 60 FPS.
+     * @private
      */
     _animateMovement() {
-        // Only move if the game is not over, not won, and chicken is not dead
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
             this.moveLeft();
             this.otherDirection = false;
         } else if (this.isDead()) {
-            // Play death animation if chicken is dead
             this.playAnimation(this.IMAGES_DEAD);
         }
     }
@@ -54,9 +62,9 @@ class ChickenSmall extends MovableObject {
     /**
      * Handles the walking animation for the small chicken.
      * Runs at 25 ms interval.
+     * @private
      */
     _animateWalking() {
-        // Only animate if the game is not over, not won, and chicken is not dead
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
             this.playAnimation(this.IMAGES_WALKING);
         }
@@ -66,10 +74,7 @@ class ChickenSmall extends MovableObject {
      * Starts the animation loops for movement and visual animation.
      */
     animate() {
-        // Interval for movement logic (60 FPS)
         setInterval(() => this._animateMovement(), 1000 / 60);
-
-        // Interval for walking animation (25 ms per frame)
         setInterval(() => this._animateWalking(), 25);
     }
 }

@@ -1,3 +1,7 @@
+/**
+ * Represents a drawable object in the game.
+ * Provides basic properties and methods for image loading and drawing on a canvas.
+ */
 class DrawableObject {
     img;
     imageCache = {};
@@ -6,6 +10,15 @@ class DrawableObject {
     y = 280;
     height = 150;
     width = 100;
+
+    /**
+     * Creates an instance of DrawableObject.
+     * (Note: The constructor is implicitly defined here if not explicitly written,
+     * but we add a JSDoc for clarity.)
+     */
+    constructor() {
+        // Default constructor. Properties are defined directly on the class.
+    }
 
     /**
      * Loads an image from the given path and sets it as the current image.
@@ -27,6 +40,7 @@ class DrawableObject {
     /**
      * Calculates the dimensions for the collision frame based on the object's offsets.
      * @returns {{drawX: number, drawY: number, drawWidth: number, drawHeight: number}} The calculated coordinates and dimensions.
+     * @private
      */
     _getCollisionFrameDimensions() {
         const drawX = this.x + this.offset.left;
@@ -39,6 +53,7 @@ class DrawableObject {
     /**
      * Draws a red collision frame around specific types of objects (Character, Chicken, Endboss).
      * @param {CanvasRenderingContext2D} ctx - The rendering context of the canvas.
+     * @private
      */
     _drawCollisionFrame(ctx) {
         ctx.beginPath();
@@ -46,7 +61,7 @@ class DrawableObject {
         ctx.strokeStyle = "red";
         const { drawX, drawY, drawWidth, drawHeight } = this._getCollisionFrameDimensions();
         ctx.rect(drawX, drawY, drawWidth, drawHeight);
-        ctx.stroke(); // Draws the path
+        ctx.stroke();
     }
 
     /**

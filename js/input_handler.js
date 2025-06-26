@@ -1,21 +1,19 @@
-// js/input_handler.js
-
 /**
  * Resets the state of all keyboard keys to false.
  */
 function resetKeyboardState() {
-    keyboard.RIGHT = false; // Global variable from main.js
-    keyboard.LEFT = false; // Global variable from main.js
-    keyboard.UP = false; // Global variable from main.js
-    keyboard.DOWN = false; // Global variable from main.js
-    keyboard.SPACE = false; // Global variable from main.js
+    keyboard.RIGHT = false;
+    keyboard.LEFT = false;
+    keyboard.UP = false;
+    keyboard.DOWN = false;
+    keyboard.SPACE = false;
 }
 
 /**
  * Handles keyboard input for movement and actions.
  * @param {KeyboardEvent} event - The keyboard event.
  * @param {boolean} isKeyDown - True if it's a keydown event, false for keyup.
-*/
+ */
 function handleKeyboardMovement(event, isKeyDown) {
     if (event.keyCode == 39) { // Right arrow
         keyboard.RIGHT = isKeyDown;
@@ -41,11 +39,11 @@ function addTouchControls(buttonId, keyName) {
     if (button) {
         button.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            keyboard[keyName] = true; // Global variable from main.js
+            keyboard[keyName] = true;
         }, { passive: false });
         button.addEventListener('touchend', (e) => {
             e.preventDefault();
-            keyboard[keyName] = false; // Global variable from main.js
+            keyboard[keyName] = false;
         }, { passive: false });
     }
 }

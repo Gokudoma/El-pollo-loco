@@ -1,3 +1,8 @@
+/**
+ * Represents a movable object in the game, extending the DrawableObject.
+ * Provides properties and methods for movement, gravity, collision detection,
+ * health, and animation.
+ */
 class MovableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
@@ -15,8 +20,19 @@ class MovableObject extends DrawableObject {
     };
 
     /**
+     * Creates an instance of MovableObject.
+     * (Note: The constructor is implicitly defined here if not explicitly written,
+     * but we add a JSDoc for clarity.)
+     */
+    constructor() {
+        super();
+        // Default constructor. Properties are defined directly on the class.
+    }
+
+    /**
      * Checks if gravity should be applied or stopped based on object type and state.
      * @returns {boolean} True if gravity interval should be cleared, false otherwise.
+     * @private
      */
     _shouldStopGravity() {
         if (this instanceof Character && this.isDead()) {
@@ -61,6 +77,7 @@ class MovableObject extends DrawableObject {
     /**
      * Gets the collision box dimensions for the current movable object.
      * @returns {{x: number, y: number, width: number, height: number}} Collision box.
+     * @private
      */
     _getThisCollisionBox() {
         const x = this.x + this.offset.left;
@@ -74,6 +91,7 @@ class MovableObject extends DrawableObject {
      * Gets the collision box dimensions for another movable object.
      * @param {MovableObject} mo - The other movable object.
      * @returns {{x: number, y: number, width: number, height: number}} Collision box.
+     * @private
      */
     _getOtherCollisionBox(mo) {
         const moOffsetLeft = mo.offset ? mo.offset.left : 0;

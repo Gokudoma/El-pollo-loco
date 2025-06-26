@@ -1,14 +1,28 @@
+/**
+ * Manages all collision detection and resolution within the game world.
+ */
 class CollisionManager {
+    /**
+     * Creates an instance of CollisionManager.
+     * @param {World} world - A reference to the game world.
+     */
     constructor(world) {
         this.world = world;
-    } // Initializes the CollisionManager with a reference to the game world.
+    }
 
+    /**
+     * Orchestrates all collision checks within the game.
+     */
     checkAllCollisions() {
         this._checkEnemyCollisions();
         this._checkBottleCollisions();
         this._checkCoinCollisions();
-    } // Orchestrates all collision checks within the game.
+    }
 
+    /**
+     * Checks collisions between the character/throwable objects and enemies.
+     * @private
+     */
     _checkEnemyCollisions() {
         this.world.level.enemies.forEach(enemy => {
             this._handleCharacterEnemyCollision(enemy);
@@ -16,8 +30,13 @@ class CollisionManager {
                 this._handleBottleEnemyCollision(bottle, enemy);
             });
         });
-    } // Checks collisions between the character/throwable objects and enemies.
+    }
 
+    /**
+     * Handles character-enemy collision, including character damage and game over.
+     * @param {MovableObject} enemy - The enemy object involved in the collision.
+     * @private
+     */
     _handleCharacterEnemyCollision(enemy) {
         if (this.world.character.isColliding(enemy) && !enemy.isDead()) {
             this.world.character.hit();
@@ -26,8 +45,14 @@ class CollisionManager {
                 this.world.endGame();
             }
         }
-    } // Handles character-enemy collision, including character damage and game over.
+    }
 
+    /**
+     * Handles throwable bottle-enemy collision, including bottle splash and enemy damage.
+     * @param {ThrowableObject} bottle - The throwable bottle object.
+     * @param {MovableObject} enemy - The enemy object.
+     * @private
+     */
     _handleBottleEnemyCollision(bottle, enemy) {
         if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
             bottle.splash();
@@ -36,28 +61,48 @@ class CollisionManager {
             this.world._updateEndbossHealth(enemy);
             this.world._playEndbossDeathSound(enemy);
         }
-    } // Handles throwable bottle-enemy collision, including bottle splash and enemy damage.
+    }
 
+    /**
+     * Checks for collisions between the character and collectible bottles.
+     * @private
+     */
     _checkBottleCollisions() {
         this.world.level.bottles.forEach((bottle, index) => {
             this._handleCharacterBottleCollision(bottle, index);
         });
-    } // Checks for collisions between the character and collectible bottles.
+    }
 
+    /**
+     * Handles character-collectible bottle collision, updating bottle count and UI.
+     * @param {Bottle} bottle - The collected bottle object.
+     * @param {number} index - The index of the collected bottle in the level's bottles array.
+     * @private
+     */
     _handleCharacterBottleCollision(bottle, index) {
         if (this.world.character.isColliding(bottle)) {
             this.world.character.bottles++;
             this.world.level.bottles.splice(index, 1);
             this.world.statusBarBottles.setPercentage(this.world.character.bottles * 20);
         }
-    } // Handles character-collectible bottle collision, updating bottle count and UI.
+    }
 
+    /**
+     * Checks for collisions between the character and collectible coins.
+     * @private
+     */
     _checkCoinCollisions() {
         this.world.level.coins.forEach((coin, index) => {
             this._handleCharacterCoinCollision(coin, index);
         });
-    } // Checks for collisions between the character and collectible coins.
+    }
 
+    /**
+     * Handles character-collectible coin collision, updating coin count and UI.
+     * @param {Coin} coin - The collected coin object.
+     * @param {number} index - The index of the collected coin in the level's coins array.
+     * @private
+     */
     _handleCharacterCoinCollision(coin, index) {
         if (this.world.character.isColliding(coin)) {
             this.world.character.coins++;
@@ -65,5 +110,5 @@ class CollisionManager {
             let collectedCoinPercentage = (this.world.character.coins / this.world.level.initialCoinCount) * 100;
             this.world.statusBarCoins.setPercentage(collectedCoinPercentage);
         }
-    } // Handles character-collectible coin collision, updating coin count and UI.
+    }
 }

@@ -1,5 +1,3 @@
-// js/game_settings.js
-
 /**
  * Loads mute and volume settings from local storage.
  */

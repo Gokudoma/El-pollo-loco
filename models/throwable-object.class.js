@@ -1,3 +1,7 @@
+/**
+ * Represents a throwable object (salsa bottle) in the game.
+ * Inherits from MovableObject and handles its throwing, rotation, and splash animations.
+ */
 class ThrowableObject extends MovableObject {
 
     IMAGES_ROTATION = [
@@ -20,8 +24,13 @@ class ThrowableObject extends MovableObject {
     splashAnimationFinished = false;
     throwInterval = null;
     splashInterval = null;
-    gravityInterval = null; // Defined here, but initialized in MovableObject
+    gravityInterval = null;
 
+    /**
+     * Creates an instance of ThrowableObject.
+     * @param {number} x - The initial x-coordinate of the bottle.
+     * @param {number} y - The initial y-coordinate of the bottle.
+     */
     constructor(x, y) {
         super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
         this.loadImages(this.IMAGES_ROTATION);
@@ -35,6 +44,7 @@ class ThrowableObject extends MovableObject {
 
     /**
      * Handles the movement and rotation animation of the bottle during throwing.
+     * @private
      */
     _animateThrowing() {
         if (!this.isSplashing) {
@@ -49,7 +59,7 @@ class ThrowableObject extends MovableObject {
      */
     throw() {
         this.speedY = 30;
-        this.applyGravity(); // Inherited from MovableObject
+        this.applyGravity();
 
         this.throwInterval = setInterval(() => {
             this._animateThrowing();
@@ -58,6 +68,7 @@ class ThrowableObject extends MovableObject {
 
     /**
      * Handles the single frame update for the splash animation.
+     * @private
      */
     _updateSplashFrame() {
         if (this.currentImage < this.IMAGES_SPLASH.length) {
@@ -76,9 +87,9 @@ class ThrowableObject extends MovableObject {
      */
     splash() {
         this.isSplashing = true;
-        clearInterval(this.throwInterval); // Stop bottle rotation
+        clearInterval(this.throwInterval);
 
-        this.currentImage = 0; // Reset image index for splash animation
+        this.currentImage = 0;
         this.splashInterval = setInterval(() => {
             this._updateSplashFrame();
         }, 80);

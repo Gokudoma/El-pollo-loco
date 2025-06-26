@@ -1,7 +1,13 @@
-// Defines the Endboss for level 1
+/**
+ * Defines the Endboss for level 1.
+ * @type {Endboss}
+ */
 const level1Endboss = new Endboss();
 
-// Defines the initial coins for level 1 with their positions
+/**
+ * Defines the initial coins for level 1 with their positions.
+ * @type {Coin[]}
+ */
 const level1Coins = [
     new Coin(300, 200),
     new Coin(500, 150),
@@ -12,7 +18,10 @@ const level1Coins = [
     new Coin(1500, 150),
 ];
 
-// Defines the initial bottles for level 1 with their positions
+/**
+ * Defines the initial bottles for level 1 with their positions.
+ * @type {Bottle[]}
+ */
 const level1Bottles = [
     new Bottle(400, 360),
     new Bottle(600, 360),
@@ -71,8 +80,8 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 719 * 3),
         new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 719 * 3),
     ],
-    level1Bottles, // Uses the previously defined bottle array
-    level1Coins,    // Uses the previously defined coin array
-    level1Endboss,  // Uses the previously defined end boss object
-    2200            // The x-coordinate where this level ends
+    level1Bottles,
+    level1Coins,
+    level1Endboss,
+    2200
 );

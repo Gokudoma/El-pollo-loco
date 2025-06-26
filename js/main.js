@@ -5,7 +5,7 @@ let world;
 let keyboard = new Keyboard();
 let isMutedGlobally;
 let currentVolume;
-let gameHasStarted = false; // <<< NEU: Dieser globale Status ist entscheidend
+let gameHasStarted = false;
 
 /**
  * Initializes the game core components.
@@ -21,15 +21,11 @@ function init() {
     updateMuteButton();
     setupVolumeSlider();
     setGlobalVolume();
-
-    // Ensure initial display state: Start screen visible, game canvas hidden
-    // checkOrientation() will handle this based on gameHasStarted state
-    // No direct D-none manipulation here in init() needed anymore for main screens
 }
 
 // Event listeners for window resize and load
 window.addEventListener('resize', checkOrientation);
-window.addEventListener('load', checkOrientation); // checkOrientation will now correctly show start screen
+window.addEventListener('load', checkOrientation);
 
 // The global 'keydown' and 'keyup' listener remains here as it globally controls the keyboard.
 window.addEventListener('keydown', (event) => {

@@ -1,3 +1,7 @@
+/**
+ * Represents a normal chicken enemy in the game.
+ * Inherits from MovableObject and handles its movement, animation, and death state.
+ */
 class Chicken extends MovableObject {
     y = 360;
     height = 60;
@@ -16,6 +20,7 @@ class Chicken extends MovableObject {
     /**
      * Initializes the x-position of the chicken.
      * @param {number|null} x - The initial x-position, or null to generate randomly.
+     * @private
      */
     _initializePosition(x) {
         if (x !== null) {
@@ -25,12 +30,16 @@ class Chicken extends MovableObject {
         }
     }
 
+    /**
+     * Creates an instance of Chicken.
+     * @param {number|null} [x=null] - The initial x-coordinate of the chicken. If null, a random position is generated.
+     */
     constructor(x = null) {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_DEAD);
 
-        this._initializePosition(x); // Hilfsfunktion für die Positionsinitialisierung
+        this._initializePosition(x);
         this.speed = 0.15 + Math.random() * 0.4;
 
         this.animate();
@@ -39,14 +48,13 @@ class Chicken extends MovableObject {
     /**
      * Handles the movement logic for the chicken.
      * Runs at 60 FPS.
+     * @private
      */
     _animateMovement() {
-        // Bewegt sich nur, wenn das Spiel nicht vorbei ist, nicht gewonnen wurde und das Huhn nicht tot ist
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
             this.moveLeft();
             this.otherDirection = false;
         } else if (this.isDead()) {
-            // Spielt die Todesanimation, wenn das Huhn tot ist
             this.playAnimation(this.IMAGES_DEAD);
         }
     }
@@ -54,9 +62,9 @@ class Chicken extends MovableObject {
     /**
      * Handles the walking animation for the chicken.
      * Runs at 25 ms interval.
+     * @private
      */
     _animateWalking() {
-        // Animiert nur, wenn das Spiel nicht vorbei ist, nicht gewonnen wurde und das Huhn nicht tot ist
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
             this.playAnimation(this.IMAGES_WALKING);
         }
@@ -66,10 +74,7 @@ class Chicken extends MovableObject {
      * Starts the animation loops for movement and visual animation.
      */
     animate() {
-        // Interval für die Bewegungslogik (60 FPS)
         setInterval(() => this._animateMovement(), 1000 / 60);
-
-        // Interval für die Laufanimation (25 ms pro Frame)
         setInterval(() => this._animateWalking(), 25);
     }
 }

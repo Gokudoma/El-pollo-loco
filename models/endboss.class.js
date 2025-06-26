@@ -1,3 +1,7 @@
+/**
+ * Represents the Endboss enemy in the game.
+ * Inherits from MovableObject and manages its animations, health, and death state.
+ */
 class Endboss extends MovableObject {
 
     height = 400;
@@ -22,6 +26,10 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
+    /**
+     * Creates an instance of Endboss.
+     * Loads images, sets initial position, and starts the animation.
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -33,6 +41,7 @@ class Endboss extends MovableObject {
     /**
      * Handles the animation logic when the endboss is dead.
      * Plays the death animation sequence and clears the animation interval after the last frame.
+     * @private
      */
     _playDeathAnimation() {
         if (this.currentImage < this.IMAGES_DEAD.length) {
@@ -41,17 +50,16 @@ class Endboss extends MovableObject {
             this.currentImage++;
         } else {
             clearInterval(this.animationInterval);
-            // Ensure the last death image remains displayed
-            this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
+            this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]]; // Ensure the last death image remains displayed
         }
     }
 
     /**
      * Determines and plays the appropriate animation based on the endboss's state.
      * This method is called repeatedly by the animation interval.
+     * @private
      */
     _handleAnimationState() {
-        // Only animate if the game is not over, not won, and the endboss is not dead
         if (this.world && !this.world.isGameOver && !this.world.isGameWon && !this.isDead()) {
             this.playAnimation(this.IMAGES_WALKING);
         } else if (this.isDead()) {
