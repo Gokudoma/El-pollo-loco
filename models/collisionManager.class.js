@@ -82,6 +82,7 @@ class CollisionManager {
 
     /**
      * Handles character-collectible bottle collision, updating bottle count and UI.
+     * Plays the collect bottle sound.
      * @param {Bottle} bottle - The collected bottle object.
      * @param {number} index - The index of the collected bottle in the level's bottles array.
      * @private
@@ -91,6 +92,11 @@ class CollisionManager {
             this.world.character.bottles++;
             this.world.level.bottles.splice(index, 1);
             this.world.statusBarBottles.setPercentage(this.world.character.bottles * 20);
+            // Play collect bottle sound
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
+                this.world.collectBottleSound.currentTime = 0;
+                this.world.collectBottleSound.play();
+            }
         }
     }
 
@@ -106,6 +112,7 @@ class CollisionManager {
 
     /**
      * Handles character-collectible coin collision, updating coin count and UI.
+     * Plays the collect coin sound.
      * @param {Coin} coin - The collected coin object.
      * @param {number} index - The index of the collected coin in the level's coins array.
      * @private
@@ -116,6 +123,11 @@ class CollisionManager {
             this.world.level.coins.splice(index, 1);
             let collectedCoinPercentage = (this.world.character.coins / this.world.level.initialCoinCount) * 100;
             this.world.statusBarCoins.setPercentage(collectedCoinPercentage);
+            // Play collect coin sound
+            if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
+                this.world.collectCoinSound.currentTime = 0;
+                this.world.collectCoinSound.play();
+            }
         }
     }
 }

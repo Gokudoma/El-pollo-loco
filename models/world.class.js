@@ -25,6 +25,8 @@ class World {
     chickenSound = new Audio('audio/chicken.mp3');
     chickenSoundPlaying = false;
     brokenBottleSound = new Audio('audio/brokenBottle.mp3');
+    collectCoinSound = new Audio('audio/collectCoin.mp3'); // New sound for coin collection
+    collectBottleSound = new Audio('audio/collectBottle.mp3'); // New sound for bottle collection
     gamePaused = false;
     levelDisplayElement; // Reference to the HTML element displaying the current level
 
@@ -65,6 +67,8 @@ class World {
             this.chickenSound.volume = currentVolume;
             this.chickenBossDieSound.volume = currentVolume;
             this.brokenBottleSound.volume = currentVolume;
+            this.collectCoinSound.volume = currentVolume; // Set volume for new coin sound
+            this.collectBottleSound.volume = currentVolume; // Set volume for new bottle sound
         }
     }
 
@@ -270,7 +274,7 @@ class World {
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('levelCompleteScreen');
         updatePausePlayButton();
-        this._updateLevelDisplay(); // Update level display on screen change
+        this._updateLevelDisplay();
     }
 
     /**
@@ -333,7 +337,7 @@ class World {
         this._playLevelMusic();
         this._checkOrientationAndResumeGame();
         updatePausePlayButton();
-        this._updateLevelDisplay(); // Update level display when moving to next level
+        this._updateLevelDisplay();
     }
 
     /**
@@ -381,7 +385,7 @@ class World {
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameWonScreen');
         updatePausePlayButton();
-        this._updateLevelDisplay(); // Update level display on screen change
+        this._updateLevelDisplay();
     }
 
     /**
@@ -393,7 +397,7 @@ class World {
         this._pauseAllGameSounds();
         this._hideGameElementsAndShowScreen('gameOverScreen');
         updatePausePlayButton();
-        this._updateLevelDisplay(); // Update level display on screen change
+        this._updateLevelDisplay();
     }
 
     /**
