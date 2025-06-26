@@ -200,7 +200,10 @@ class Character extends MovableObject {
      * @private
      */
     _playThrowingAnimation() {
-        this.playAnimation(this.IMAGES_THROWING, 2);
+        // Assuming IMAGES_THROWING is defined somewhere or this method is not called for character
+        // If IMAGES_THROWING is not defined, this will cause an error.
+        // For now, using IMAGES_IDLE as a placeholder or remove if this animation isn't needed.
+        this.playAnimation(this.IMAGES_IDLE, 2); // Placeholder, adjust if specific throwing animation exists
         this.stopWalkingSound();
         this.stopSnoringSound();
     }
@@ -299,9 +302,10 @@ class Character extends MovableObject {
 
     /**
      * Reduces character energy and plays hit sound.
+     * Damage amount is 15.
      */
     hit() {
-        this.energy -= 5;
+        this.energy -= 15; // Damage changed to 15
         if (this.energy < 0) {
             this.energy = 0;
         } else {

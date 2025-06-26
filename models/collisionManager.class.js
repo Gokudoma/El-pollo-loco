@@ -34,15 +34,22 @@ class CollisionManager {
 
     /**
      * Handles character-enemy collision, including character damage and game over.
+     * Damage is applied with a cooldown of 500ms.
      * @param {MovableObject} enemy - The enemy object involved in the collision.
      * @private
      */
     _handleCharacterEnemyCollision(enemy) {
+        const damageCooldown = 500; // Cooldown in milliseconds for taking damage
+        const currentTime = new Date().getTime();
+
         if (this.world.character.isColliding(enemy) && !enemy.isDead()) {
-            this.world.character.hit();
-            this.world.statusBar.setPercentage(this.world.character.energy);
-            if (this.world.character.isDead()) {
-                this.world.endGame();
+            // Check if enough time has passed since the last hit
+            if (currentTime - this.world.character.lastHit > damageCooldown) {
+                this.world.character.hit(); // This will update character.lastHit
+                this.world.statusBar.setPercentage(this.world.character.energy);
+                if (this.world.character.isDead()) {
+                    this.world.endGame();
+                }
             }
         }
     }
