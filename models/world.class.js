@@ -217,6 +217,32 @@ class World {
     }
 
     /**
+     * Handles playing the chicken sound.
+     * @private
+     */
+    _playChickenSound() {
+        this.chickenSound.currentTime = 0;
+        this.chickenSound.play().catch(e => {
+            if (e.name === "AbortError") {
+                // This error is expected if playback is interrupted quickly
+            } else {
+                console.error("Error playing chicken sound:", e);
+            }
+        });
+        this.chickenSoundPlaying = true;
+    }
+
+    /**
+     * Handles pausing the chicken sound.
+     * @private
+     */
+    _pauseChickenSound() {
+        this.chickenSound.pause();
+        this.chickenSound.currentTime = 0;
+        this.chickenSoundPlaying = false;
+    }
+
+    /**
      * Manages the chicken sound playback based on enemy proximity and global mute status.
      * @param {boolean} foundProximityEnemy - True if a chicken enemy is within proximity.
      * @private
@@ -227,19 +253,9 @@ class World {
                             (isMutedGlobally && this.chickenSoundPlaying);
 
         if (shouldPlay) {
-            this.chickenSound.currentTime = 0;
-            this.chickenSound.play().catch(e => {
-                     if (e.name === "AbortError") {
-                         // This error is expected if playback is interrupted quickly
-                     } else {
-                         console.error("Error playing chicken sound:", e);
-                     }
-            });
-            this.chickenSoundPlaying = true;
+            this._playChickenSound();
         } else if (shouldPause) {
-            this.chickenSound.pause();
-            this.chickenSound.currentTime = 0;
-            this.chickenSoundPlaying = false;
+            this._pauseChickenSound();
         }
     }
 
