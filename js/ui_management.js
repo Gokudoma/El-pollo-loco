@@ -248,3 +248,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+/**
+ * Function to go to the next level from a button click.
+ * Assumes `world` and `gameFlowManager` are globally accessible.
+ */
+function goToNextLevelFromButton() {
+    if (world && world.gameFlowManager) {
+        world.gameFlowManager.goToNextLevel();
+    }
+}
+
+/**
+ * Function to restart the game from a button click.
+ * Assumes `world` and `gameFlowManager` are globally accessible.
+ */
+function restartGame() {
+    if (world && world.gameFlowManager) {
+        world.gameFlowManager.goToNextLevel(); // Effectively restarts by going to level 1
+    }
+}

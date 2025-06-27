@@ -2,16 +2,16 @@
  * Toggles the global mute state and updates related settings.
  */
 function toggleMute() {
-    isMutedGlobally = !isMutedGlobally; 
+    isMutedGlobally = !isMutedGlobally;
     saveSettings();
     setGlobalVolume();
     updateMuteButton();
     // When mute is toggled, ensure level sound reacts immediately
-    if (world && world.levelSound) {
+    if (world && world.audioManager && world.audioManager.levelSound) { // Access via audioManager
         if (isMutedGlobally) {
-            world.levelSound.pause();
+            world.audioManager.levelSound.pause();
         } else if (!world.gamePaused) { // Only play if not globally muted AND not paused
-            world.levelSound.play();
+            world.audioManager.levelSound.play();
         }
     }
 }
@@ -24,10 +24,10 @@ function updateMuteButton() {
     const muteMobileBtn = document.getElementById('muteMobileBtn');
 
     if (muteBtn) {
-        muteBtn.innerText = isMutedGlobally ? 'Sound On' : 'Sound Mute'; 
+        muteBtn.innerText = isMutedGlobally ? 'Sound On' : 'Sound Mute';
     }
     if (muteMobileBtn) {
-        muteMobileBtn.innerText = isMutedGlobally ? '🔇' : '🔊'; 
+        muteMobileBtn.innerText = isMutedGlobally ? '🔇' : '🔊';
     }
 }
 
@@ -38,9 +38,9 @@ function updateMuteButton() {
 function setupSingleVolumeSlider(sliderId) {
     const volumeSlider = document.getElementById(sliderId);
     if (volumeSlider) {
-        volumeSlider.value = currentVolume; 
+        volumeSlider.value = currentVolume;
         volumeSlider.addEventListener('input', (e) => {
-            currentVolume = parseFloat(e.target.value); 
+            currentVolume = parseFloat(e.target.value);
             saveSettings();
             setGlobalVolume();
         });
@@ -75,9 +75,9 @@ function setSoundVolume(sound, volumeToSet) {
 function handleCharacterSoundPlayback(sound, soundPlayingProp, conditionFn) {
     if (!sound) return;
 
-    sound.volume = isMutedGlobally ? 0 : currentVolume; 
+    sound.volume = isMutedGlobally ? 0 : currentVolume;
 
-    if (isMutedGlobally && world.character[soundPlayingProp]) { 
+    if (isMutedGlobally && world.character[soundPlayingProp]) {
         sound.pause();
         world.character[soundPlayingProp] = false;
     } else if (!isMutedGlobally && !world.character[soundPlayingProp] && conditionFn() && !world.gamePaused) { // Added !world.gamePaused
@@ -88,16 +88,22 @@ function handleCharacterSoundPlayback(sound, soundPlayingProp, conditionFn) {
 
 /**
  * Sets the global volume for all game sounds.
+ * This function now primarily affects character-specific sounds and delegates to WorldAudioManager for others.
  */
 function setGlobalVolume() {
-    if (!world) return; 
+    if (!world) return;
 
-    const volumeToSet = isMutedGlobally ? 0 : currentVolume; 
+    const volumeToSet = isMutedGlobally ? 0 : currentVolume;
 
-    setSoundVolume(world.levelSound, volumeToSet);
-    setSoundVolume(world.chickenSound, volumeToSet);
-    setSoundVolume(world.chickenBossDieSound, volumeToSet);
-    setSoundVolume(world.brokenBottleSound, volumeToSet);
+    // Delegate global sound volume setting to WorldAudioManager
+    if (world.audioManager) {
+        world.audioManager.levelSound.volume = volumeToSet;
+        world.audioManager.chickenSound.volume = volumeToSet;
+        world.audioManager.chickenBossDieSound.volume = volumeToSet;
+        world.audioManager.brokenBottleSound.volume = volumeToSet;
+        world.audioManager.collectCoinSound.volume = volumeToSet;
+        world.audioManager.collectBottleSound.volume = volumeToSet;
+    }
 
     if (world.character) {
         setSoundVolume(world.character.jumpSound, volumeToSet);
@@ -117,9 +123,9 @@ function setGlobalVolume() {
  * Plays the level background sound if the game world exists, is not muted, and not paused.
  */
 function playLevelSound() {
-    if (world && world.levelSound && !isMutedGlobally && !world.gamePaused) { 
-        world.levelSound.play();
-        world.levelSoundPlaying = true;
+    if (world && world.audioManager && world.audioManager.levelSound && !isMutedGlobally && !world.gamePaused) {
+        world.audioManager.levelSound.play();
+        world.audioManager.levelSoundPlaying = true;
     }
 }
 
@@ -128,12 +134,12 @@ function playLevelSound() {
  * Ensures all looping and character sounds are stopped.
  */
 function pauseGameSounds() {
-    if (world) { 
-        if (world.levelSound) {
-            world.levelSound.pause();
+    if (world) {
+        if (world.audioManager && world.audioManager.levelSound) {
+            world.audioManager.levelSound.pause();
         }
-        if (world.chickenSound) {
-            world.chickenSound.pause();
+        if (world.audioManager && world.audioManager.chickenSound) {
+            world.audioManager.chickenSound.pause();
         }
         if (world.character) {
             if (world.character.stepsSound) {
@@ -153,10 +159,10 @@ function pauseGameSounds() {
  * Only non-muted and non-paused background/looping sounds will resume.
  */
 function resumeGameSounds() {
-    if (world) { 
-        if (!isMutedGlobally && !world.gamePaused) { 
-            if (world.levelSound) {
-                world.levelSound.play();
+    if (world) {
+        if (!isMutedGlobally && !world.gamePaused) {
+            if (world.audioManager && world.audioManager.levelSound) {
+                world.audioManager.levelSound.play();
             }
         }
     }

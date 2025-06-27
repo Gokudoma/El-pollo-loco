@@ -54,19 +54,7 @@ class CollisionManager {
         enemy.energy = 0; // Instantly kill the chicken
         enemy.deadTime = new Date().getTime(); // Set dead time for the chicken
         this.world.character.speedY = 20; // Make character bounce upwards
-        this._stopChickenSoundIfPlaying();
-    }
-
-    /**
-     * Stops chicken sound if it's currently playing.
-     * @private
-     */
-    _stopChickenSoundIfPlaying() {
-        if (this.world.chickenSoundPlaying) {
-            this.world.chickenSound.pause();
-            this.world.chickenSound.currentTime = 0;
-            this.world.chickenSoundPlaying = false;
-        }
+        this.world.audioManager._pauseChickenSound(); // Changed to _pauseChickenSound
     }
 
     /**
@@ -77,7 +65,7 @@ class CollisionManager {
         this.world.character.hit(); // This applies damage to character
         this.world.statusBar.setPercentage(this.world.character.energy);
         if (this.world.character.isDead()) {
-            this.world.endGame();
+            this.world.gameFlowManager.endGame(); // Call gameFlowManager
         }
     }
 
@@ -111,9 +99,9 @@ class CollisionManager {
         if (bottle.isColliding(enemy) && !bottle.isSplashing && !enemy.isDead()) {
             bottle.splash();
             enemy.hit();
-            this.world._playBrokenBottleSound();
+            this.world.audioManager._playBrokenBottleSound(); // Access via audioManager
             this.world._updateEndbossHealth(enemy);
-            this.world._playEndbossDeathSound(enemy);
+            this.world.audioManager._playEndbossDeathSound(enemy); // Access via audioManager
         }
     }
 
@@ -140,8 +128,8 @@ class CollisionManager {
             this.world.level.bottles.splice(index, 1);
             this.world.statusBarBottles.setPercentage(this.world.character.bottles * 20);
             if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
-                this.world.collectBottleSound.currentTime = 0;
-                this.world.collectBottleSound.play();
+                this.world.audioManager.collectBottleSound.currentTime = 0; // Access via audioManager
+                this.world.audioManager.collectBottleSound.play(); // Access via audioManager
             }
         }
     }
@@ -170,8 +158,8 @@ class CollisionManager {
             let collectedCoinPercentage = (this.world.character.coins / this.world.level.initialCoinCount) * 100;
             this.world.statusBarCoins.setPercentage(collectedCoinPercentage);
             if (typeof isMutedGlobally !== 'undefined' && !isMutedGlobally) {
-                this.world.collectCoinSound.currentTime = 0;
-                this.world.collectCoinSound.play();
+                this.world.audioManager.collectCoinSound.currentTime = 0; // Access via audioManager
+                this.world.audioManager.collectCoinSound.play(); // Access via audioManager
             }
         }
     }
