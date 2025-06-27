@@ -153,7 +153,8 @@ class World {
      * @private
      */
     _createAndThrowBottle() {
-        let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+        // Pass character's current x, y, and otherDirection to the new bottle
+        let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100, this.character.otherDirection);
         bottle.setWorld(this);
         this.throwableObjects.push(bottle);
         this.character.bottles--;

@@ -183,7 +183,7 @@ class MovableObject extends DrawableObject {
             return; // Do not move if game is paused
         }
         this.x += this.speed;
-        this.otherDirection = false; // Changed from true to false
+        this.otherDirection = false;
     }
 
     /**
@@ -195,7 +195,7 @@ class MovableObject extends DrawableObject {
             return; // Do not move if game is paused
         }
         this.x -= this.speed;
-        this.otherDirection = true; // Changed from false to true
+        this.otherDirection = true;
     }
 
     /**

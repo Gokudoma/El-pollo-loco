@@ -30,8 +30,9 @@ class ThrowableObject extends MovableObject {
      * Creates an instance of ThrowableObject.
      * @param {number} x - The initial x-coordinate of the bottle.
      * @param {number} y - The initial y-coordinate of the bottle.
+     * @param {boolean} otherDirection - True if the character is facing left (needs image flip).
      */
-    constructor(x, y) {
+    constructor(x, y, otherDirection) {
         super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
         this.loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_SPLASH);
@@ -39,6 +40,7 @@ class ThrowableObject extends MovableObject {
         this.y = y;
         this.height = 80;
         this.width = 80;
+        this.otherDirection = otherDirection; // Store the direction
         this.throw();
     }
 
@@ -48,7 +50,11 @@ class ThrowableObject extends MovableObject {
      */
     _animateThrowing() {
         if (!this.isSplashing) {
-            this.x += 10;
+            if (this.otherDirection) { // If character was facing left, throw left
+                this.x -= 10;
+            } else { // If character was facing right, throw right
+                this.x += 10;
+            }
             this.playAnimation(this.IMAGES_ROTATION, 2);
         }
     }
