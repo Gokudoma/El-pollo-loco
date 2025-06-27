@@ -33,10 +33,56 @@ class CollisionManager {
     }
 
     /**
+     * Checks if character is jumping on a chicken.
+     * @param {MovableObject} enemy - The enemy object.
+     * @returns {boolean} True if character is jumping on chicken.
+     * @private
+     */
+    _isJumpingOnChicken(enemy) {
+        return (enemy instanceof Chicken || enemy instanceof ChickenSmall) &&
+               this.world.character.isAboveGround() &&
+               this.world.character.speedY < 0 &&
+               this.world.character.y + this.world.character.height - this.world.character.offset.bottom < enemy.y + enemy.offset.top + (enemy.height / 2);
+    }
+
+    /**
+     * Handles character landing on a chicken.
+     * @param {MovableObject} enemy - The enemy object.
+     * @private
+     */
+    _handleChickenStomp(enemy) {
+        enemy.energy = 0; // Instantly kill the chicken
+        enemy.deadTime = new Date().getTime(); // Set dead time for the chicken
+        this.world.character.speedY = 20; // Make character bounce upwards
+        this._stopChickenSoundIfPlaying();
+    }
+
+    /**
+     * Stops chicken sound if it's currently playing.
+     * @private
+     */
+    _stopChickenSoundIfPlaying() {
+        if (this.world.chickenSoundPlaying) {
+            this.world.chickenSound.pause();
+            this.world.chickenSound.currentTime = 0;
+            this.world.chickenSoundPlaying = false;
+        }
+    }
+
+    /**
+     * Handles character taking damage from an enemy.
+     * @private
+     */
+    _handleCharacterDamage() {
+        this.world.character.hit(); // This applies damage to character
+        this.world.statusBar.setPercentage(this.world.character.energy);
+        if (this.world.character.isDead()) {
+            this.world.endGame();
+        }
+    }
+
+    /**
      * Handles character-enemy collision logic.
-     * If the character jumps on a Chicken or ChickenSmall from above, the enemy dies,
-     * and the character takes no damage and bounces up.
-     * For other enemy types or collision angles, the character takes damage with a cooldown.
      * @param {MovableObject} enemy - The enemy object involved in the collision.
      * @private
      */
@@ -45,30 +91,11 @@ class CollisionManager {
         const currentTime = new Date().getTime();
 
         if (this.world.character.isColliding(enemy) && !enemy.isDead()) {
-            // Check if the character is jumping on top of a chicken or small chicken
-            if ((enemy instanceof Chicken || enemy instanceof ChickenSmall) &&
-                this.world.character.isAboveGround() && // Character is in the air
-                this.world.character.speedY < 0 &&     // Character is falling downwards
-                this.world.character.y + this.world.character.height - this.world.character.offset.bottom < enemy.y + enemy.offset.top + (enemy.height / 2)) { // Character's bottom half hits enemy's top half
-                
-                enemy.energy = 0; // Instantly kill the chicken
-                enemy.deadTime = currentTime; // Set dead time for the chicken
-                this.world.character.speedY = 20; // Make character bounce upwards
-
-                // Stop chicken sound if it's currently playing due to this chicken
-                if (this.world.chickenSoundPlaying) {
-                    this.world.chickenSound.pause();
-                    this.world.chickenSound.currentTime = 0;
-                    this.world.chickenSoundPlaying = false;
-                }
+            if (this._isJumpingOnChicken(enemy)) {
+                this._handleChickenStomp(enemy);
             } else {
-                // Standard collision: character takes damage if enough time has passed
                 if (currentTime - this.world.character.lastHit > damageCooldown) {
-                    this.world.character.hit(); // This applies damage to character
-                    this.world.statusBar.setPercentage(this.world.character.energy);
-                    if (this.world.character.isDead()) {
-                        this.world.endGame();
-                    }
+                    this._handleCharacterDamage();
                 }
             }
         }

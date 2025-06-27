@@ -44,17 +44,32 @@ class World {
         this.keyboard = keyboard;
         this.level = allLevels[this.currentLevelIndex];
         this.levelDisplayElement = document.getElementById('levelDisplay');
-
         this.collisionManager = new CollisionManager(this);
+        this._initializeGameComponents();
+    }
+
+    /**
+     * Initializes various game components after constructor setup.
+     * @private
+     */
+    _initializeGameComponents() {
         this.draw();
         this.setWorld();
         this.run();
         this.character.animate();
-        this.levelSound.loop = true;
-        this.chickenSound.loop = true;
+        this._setupAudioLoops();
         this._initAudioVolume();
         updatePausePlayButton();
         this._updateLevelDisplay();
+    }
+
+    /**
+     * Sets up looping for background audio.
+     * @private
+     */
+    _setupAudioLoops() {
+        this.levelSound.loop = true;
+        this.chickenSound.loop = true;
     }
 
     /**
@@ -125,7 +140,7 @@ class World {
     checkThrowObjects() {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
         const canThrow = this.keyboard.SPACE && this.character.bottles > 0 &&
-                             !this.character.isDead() && !this.isGameWon && timePassed > this.bottleCooldown;
+                                     !this.character.isDead() && !this.isGameWon && timePassed > this.bottleCooldown;
 
         if (canThrow) {
             this._createAndThrowBottle();
@@ -214,9 +229,9 @@ class World {
             this.chickenSound.currentTime = 0;
             this.chickenSound.play().catch(e => {
                      if (e.name === "AbortError") {
-                        // This error is expected if playback is interrupted quickly
+                         // This error is expected if playback is interrupted quickly
                      } else {
-                        console.error("Error playing chicken sound:", e);
+                         console.error("Error playing chicken sound:", e);
                      }
             });
             this.chickenSoundPlaying = true;

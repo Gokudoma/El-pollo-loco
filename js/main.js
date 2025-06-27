@@ -1,10 +1,41 @@
-// js/main.js
+/**
+ * @file This file contains the main game initialization and global event listeners.
+ */
 
+/**
+ * The HTML canvas element where the game is drawn.
+ * @type {HTMLCanvasElement}
+ */
 let canvas;
+
+/**
+ * The main game world instance.
+ * @type {World}
+ */
 let world;
+
+/**
+ * Manages the state of keyboard inputs.
+ * @type {Keyboard}
+ */
 let keyboard = new Keyboard();
+
+/**
+ * Global flag indicating if all sounds are muted.
+ * @type {boolean}
+ */
 let isMutedGlobally;
+
+/**
+ * The current global volume level (0.0 to 1.0).
+ * @type {number}
+ */
 let currentVolume;
+
+/**
+ * Flag indicating if the game has officially started (after the start screen).
+ * @type {boolean}
+ */
 let gameHasStarted = false;
 
 /**
@@ -25,7 +56,11 @@ function init() {
 window.addEventListener('resize', checkOrientation);
 window.addEventListener('load', checkOrientation);
 
-// The global 'keydown' and 'keyup' listener remains here as it globally controls the keyboard.
+/**
+ * Global keydown event listener.
+ * Handles keyboard input for movement, actions, and fullscreen toggle.
+ * @param {KeyboardEvent} event - The keyboard event.
+ */
 window.addEventListener('keydown', (event) => {
     // Only handle keyboard input if the game is actually running and not paused
     // Added a check for gameHasStarted to prevent input on start screen
@@ -39,6 +74,11 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
+/**
+ * Global keyup event listener.
+ * Handles keyboard input for releasing keys.
+ * @param {KeyboardEvent} event - The keyboard event.
+ */
 window.addEventListener('keyup', (event) => {
     // Only handle keyboard input if the game is actually running and not paused
     // Added a check for gameHasStarted to prevent input on start screen

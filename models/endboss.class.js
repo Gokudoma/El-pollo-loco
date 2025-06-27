@@ -11,7 +11,6 @@ class Endboss extends MovableObject {
     energy = 100;
     attackDistance = 300; // Distance at which the boss might start attacking (or specific behavior)
 
-    // New walking animation images for the boss chicken
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
         'img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -19,7 +18,7 @@ class Endboss extends MovableObject {
         'img/4_enemie_boss_chicken/1_walk/G4.png'
     ];
 
-    IMAGES_ALERT = [ // Original 'walking' images are now 'alert'
+    IMAGES_ALERT = [ 
         'img/4_enemie_boss_chicken/2_alert/G5.png',
         'img/4_enemie_boss_chicken/2_alert/G6.png',
         'img/4_enemie_boss_chicken/2_alert/G7.png',
@@ -97,31 +96,18 @@ class Endboss extends MovableObject {
      * Handles the movement logic for the endboss.
      * The endboss moves towards the character if not dead, game not over, and not paused.
      * Sets `otherDirection` to control the image flip based on movement.
-     * Based on previous observations, `otherDirection = false` results in facing right,
-     * and `otherDirection = true` results in facing left.
-     * To achieve:
-     * - Move Left -> Face Left (requires `otherDirection = true`)
-     * - Move Right -> Face Right (requires `otherDirection = false`)
      * @private
      */
     _handleMovementLogic() {
-        // Ensure world and character are defined before proceeding with movement logic
         if (this.isDead() || !this.world || !this.world.character || this.world.isGameOver || this.world.isGameWon || this.world.gamePaused) {
-            return; // Do not move if dead, world/character not defined, game over, game won, or paused
+            return;
         }
 
         let distanceToCharacter = this.world.character.x - this.x;
-        console.log('Endboss: distanceToCharacter:', distanceToCharacter);
 
         if (distanceToCharacter < 0) { // Character is to the left, move left
-            // To face LEFT (desired), given that 'otherDirection = true' makes it face left
-            this.otherDirection = true;
-            console.log('Endboss: Moving left, setting otherDirection to TRUE (should face left)');
             this.moveLeft();
         } else if (distanceToCharacter > 0) { // Character is to the right, move right
-            // To face RIGHT (desired), given that 'otherDirection = false' makes it face right
-            this.otherDirection = false;
-            console.log('Endboss: Moving right, setting otherDirection to FALSE (should face right)');
             this.moveRight();
         }
     }
@@ -141,6 +127,30 @@ class Endboss extends MovableObject {
         this.movementInterval = setInterval(() => {
             this._handleMovementLogic();
         }, 1000 / 60); // Roughly 60 FPS for smoother movement
+    }
+
+    /**
+     * Moves the endboss to the right by its speed.
+     * Sets `otherDirection` to true to flip the image (assuming default image faces left).
+     */
+    moveRight() {
+        if (this.world && this.world.gamePaused) {
+            return; // Do not move if game is paused
+        }
+        this.x += this.speed;
+        this.otherDirection = true; // Flip image to face right
+    }
+
+    /**
+     * Moves the endboss to the left by its speed.
+     * Sets `otherDirection` to false to not flip the image (assuming default image faces left).
+     */
+    moveLeft() {
+        if (this.world && this.world.gamePaused) {
+            return; // Do not move if game is paused
+        }
+        this.x -= this.speed;
+        this.otherDirection = false; // Do not flip image, keep facing left
     }
 
     /**

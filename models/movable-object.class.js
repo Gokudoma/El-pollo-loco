@@ -21,9 +21,10 @@ class MovableObject extends DrawableObject {
 
     /**
      * Creates an instance of MovableObject.
+     * Calls the constructor of the parent class, DrawableObject.
      */
     constructor() {
-        super();
+        super(); // Call the constructor of the parent class
     }
 
     /**
@@ -175,26 +176,26 @@ class MovableObject extends DrawableObject {
 
     /**
      * Moves the object to the right by its speed.
-     * Sets `otherDirection` to false.
+     * Sets `otherDirection` to false to not flip the image (assuming default image faces right).
      */
     moveRight() {
         if (this.world && this.world.gamePaused) {
             return; // Do not move if game is paused
         }
         this.x += this.speed;
-        this.otherDirection = false;
+        this.otherDirection = false; // Changed from true to false
     }
 
     /**
      * Moves the object to the left by its speed.
-     * Sets `otherDirection` to true.
+     * Sets `otherDirection` to true to flip the image (assuming default image faces right and needs to be flipped to face left).
      */
     moveLeft() {
         if (this.world && this.world.gamePaused) {
             return; // Do not move if game is paused
         }
         this.x -= this.speed;
-        this.otherDirection = true;
+        this.otherDirection = true; // Changed from false to true
     }
 
     /**
