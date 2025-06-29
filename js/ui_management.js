@@ -167,6 +167,7 @@ function checkOrientation() {
     }
 
     if (handleOrientationMessage(elements, touchDevice)) {
+        elements.orientationMessage.classList.remove('d-none');
         return;
     }
 
@@ -178,7 +179,7 @@ function checkOrientation() {
 /**
  * Toggles the visibility of the explanation modal and pauses/resumes game.
  */
-function toggleExplanationModal() {
+function toggleExplanationModal(event) {
     const elements = getGameUIElements();
 
     if (elements.explanationModal.classList.contains('d-none')) {
@@ -199,6 +200,9 @@ function toggleExplanationModal() {
         checkOrientation();
     }
     updatePausePlayButton(); // Update the pause/play button text
+    if (event) {
+        event.stopPropagation();
+    }
 }
 
 /**
@@ -235,10 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const explanationModalContent = document.querySelector('.explanation-modal-content');
 
     if (explanationModal && explanationModalContent) {
-        explanationModalContent.addEventListener('click', (event) => {
-            event.stopPropagation();
-        });
-
         document.addEventListener('click', (event) => {
             if (!explanationModal.classList.contains('d-none')) {
                 if (!explanationModalContent.contains(event.target) && event.target !== document.getElementById('explanationBtn') && event.target.className !== 'close-button') {
