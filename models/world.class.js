@@ -1,6 +1,5 @@
 /**
  * Represents the game world, managing all game elements, logic, and rendering.
- * Acts as the central orchestrator for game components.
  */
 class World {
     character = new Character();
@@ -23,7 +22,7 @@ class World {
     lastBottleThrow = 0;
     bottleCooldown = 1000;
     gamePaused = false;
-    levelDisplayElement; // Reference to the HTML element displaying the current level
+    levelDisplayElement;
 
     // Manager instances
     collisionManager;
@@ -33,7 +32,6 @@ class World {
 
     /**
      * Creates an instance of World.
-     * Initializes the game world, sets up canvas, keyboard, and manager classes.
      * @param {HTMLCanvasElement} canvas - The HTML canvas element for rendering.
      * @param {Keyboard} keyboard - The keyboard input handler instance.
      */
@@ -41,10 +39,9 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.level = allLevels[this.currentLevelIndex];
+        this.level = allLevels[this.currentLevelIndex](); // <-- MODIFIED
         this.levelDisplayElement = document.getElementById('levelDisplay');
 
-        // Initialize manager classes, passing 'this' (the World instance)
         this.collisionManager = new CollisionManager(this);
         this.audioManager = new WorldAudioManager(this);
         this.renderer = new WorldRenderer(this);
@@ -54,20 +51,20 @@ class World {
     }
 
     /**
-     * Initializes various game components after constructor setup.
+     * Initializes various game components.
      * @private
      */
     _initializeGameComponents() {
-        this.renderer.draw(); // Start drawing loop
-        this.setWorld(); // Set world reference for objects
-        this.run(); // Start game logic loops
-        this.character.animate(); // Start character animations
-        updatePausePlayButton(); // Update UI
-        this._updateLevelDisplay(); // Update level display
+        this.renderer.draw();
+        this.setWorld();
+        this.run();
+        this.character.animate();
+        updatePausePlayButton();
+        this._updateLevelDisplay();
     }
 
     /**
-     * Assigns the world reference to the character and all enemies in the current level.
+     * Assigns the world reference to game objects.
      */
     setWorld() {
         this.character.world = this;
@@ -82,7 +79,7 @@ class World {
     }
 
     /**
-     * Starts the main game loops for logic updates and cleanup.
+     * Starts the main game loops.
      */
     run() {
         setInterval(() => this._updateGameLogic(), 1000 / 60);
@@ -90,20 +87,20 @@ class World {
     }
 
     /**
-     * Updates core game logic: collisions, object throwing, level progression, and proximity sounds.
+     * Updates core game logic.
      * @private
      */
     _updateGameLogic() {
         if (!this.isGameOver && !this.isGameWon && !this.gamePaused) {
             this.collisionManager.checkAllCollisions();
             this.checkThrowObjects();
-            this.gameFlowManager.checkLevelCompletion(); // Call game flow manager
-            this.audioManager._checkChickenSoundProximity(); // Call audio manager
+            this.gameFlowManager.checkLevelCompletion();
+            this.audioManager._checkChickenSoundProximity();
         }
     }
 
     /**
-     * Performs cleanup of dead entities and splashed objects.
+     * Performs cleanup of dead or used objects.
      * @private
      */
     _performCleanup() {
@@ -114,7 +111,7 @@ class World {
     }
 
     /**
-     * Handles the logic for character throwing bottles.
+     * Handles the logic for throwing objects.
      */
     checkThrowObjects() {
         let timePassed = new Date().getTime() - this.lastBottleThrow;
@@ -128,11 +125,10 @@ class World {
     }
 
     /**
-     * Creates and adds a new throwable bottle to the game world.
+     * Creates a new throwable bottle.
      * @private
      */
     _createAndThrowBottle() {
-        // Pass character's current x, y, and otherDirection to the new bottle
         let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100, this.character.otherDirection);
         bottle.setWorld(this);
         this.throwableObjects.push(bottle);
@@ -141,8 +137,8 @@ class World {
     }
 
     /**
-     * Updates the endboss health bar if the hit enemy is the Endboss.
-     * @param {MovableObject} enemy - The enemy object that was hit.
+     * Updates the endboss health bar.
+     * @param {MovableObject} enemy - The enemy that was hit.
      */
     _updateEndbossHealth(enemy) {
         if (enemy instanceof Endboss) {
@@ -151,38 +147,34 @@ class World {
     }
 
     /**
-     * Removes dead enemies from the level's enemy array after a delay for death animation.
+     * Removes dead enemies from the level.
      */
     cleanupDeadEnemies() {
         const currentTime = new Date().getTime();
         this.level.enemies = this.level.enemies.filter(enemy => {
-            // Keep enemies that are not dead
             if (!enemy.isDead()) {
                 return true;
             }
-            // Keep dead enemies for 1500ms to show death animation
             if (currentTime - enemy.deadTime < 1500) {
                 return true;
             }
-            // Remove enemies after the death animation duration
             return false;
         });
     }
 
     /**
-     * Removes bottles that have completed their splash animation.
+     * Removes splashed bottles from the game.
      */
     cleanupSplashedBottles() {
         this.throwableObjects = this.throwableObjects.filter(bottle => !bottle.splashAnimationFinished);
     }
 
     /**
-     * Updates the displayed level number in the UI.
+     * Updates the level number in the UI.
      * @private
      */
     _updateLevelDisplay() {
         if (this.levelDisplayElement) {
-            // Adjust +1 because currentLevelIndex is 0-based
             this.levelDisplayElement.querySelector('span').innerText = this.currentLevelIndex + 1;
         }
     }

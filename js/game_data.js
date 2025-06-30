@@ -1,7 +1,6 @@
 /**
- * Global array containing all game levels.
- * This array must be defined after all level files (level1.js, level2.js, level3.js)
- * have been loaded, and before the World class is initialized.
- * @type {Level[]}
+ * Global array holding all level initialization functions.
+ * Must be defined after level files are loaded.
+ * @type {Function[]}
  */
-const allLevels = [level1, level2, level3];
+const allLevels = [initLevel1, initLevel2, initLevel3];
