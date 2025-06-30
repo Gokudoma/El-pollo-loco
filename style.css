@@ -14,15 +14,9 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
     background-image: url('img/body_background/body_background.png');
     background-size: cover;
     background-position: center;
@@ -30,6 +24,15 @@ body {
     font-family: 'flyingbubble', Arial, Helvetica, sans-serif;
     font-size: 60px;
     color: rgb(244, 168, 26);
+}
+
+#game-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
 }
 
 * {
@@ -325,9 +328,8 @@ button:active {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Base styles for the orientation message */
 #orientationMessage {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -338,20 +340,18 @@ button:active {
     font-size: 2em;
     padding: 20px;
     box-sizing: border-box;
-    z-index: 102; /* Ensures it's on top of everything else */
-    justify-content: center; /* Center content horizontally */
-    align-items: center;    /* Center content vertically */
+    z-index: 102;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    flex-direction: column; /* Stack content (text, icon) vertically */
+    flex-direction: column;
 }
 #orientationMessage p {
     margin: 0;
     max-width: 80%;
 }
 
-/* Media query to display orientation message ONLY in portrait mode */
 @media screen and (orientation: portrait) {
-    /* Hide all game-related wrappers/screens */
     .game-wrapper,
     .mobile-controls-wrapper,
     .controls-container,
@@ -364,7 +364,6 @@ button:active {
         display: none !important;
     }
 
-    /* Display the orientation message */
     #orientationMessage {
         display: flex !important;
     }
@@ -409,7 +408,7 @@ button:active {
     .mobile-btn {
         width: 60px;
         height: 60px;
-        font-size: 1em;
+        font-size: 0.7em;
     }
     .game-over-screen button,
     .start-screen button,
@@ -444,19 +443,18 @@ button:active {
     }
 }
 
-/* Styles for the level display */
 .level-display {
     position: absolute;
-    top: 10px; /* Adjusted to be closer to top, preventing overlap with status bars in landscape */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Adjust for perfect centering */
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     padding: 8px 15px;
     border-radius: 8px;
-    font-size: 1.0em; /* Base font size */
+    font-size: 1.0em;
     font-weight: bold;
-    z-index: 10; /* Ensure it's above canvas */
+    z-index: 10;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     text-align: center;
@@ -468,11 +466,10 @@ button:active {
     margin-left: 5px;
 }
 
-/* Make font size smaller on smaller screens */
 @media (max-width: 769px) {
     .level-display {
-        font-size: 0.7em; /* Smaller font for tablets/smaller desktops */
-        top: 5px; /* Slightly higher on smaller screens */
+        font-size: 0.7em;
+        top: 5px;
         padding: 6px 12px;
     }
     .level-display span {
@@ -482,11 +479,56 @@ button:active {
 
 @media (max-width: 480px) {
     .level-display {
-        font-size: 0.7em; /* Even smaller for mobile phones */
-        top: 2px; /* Even higher for mobile phones */
+        font-size: 0.7em;
+        top: 2px;
         padding: 4px 10px;
     }
     .level-display span {
         font-size: 1.1em;
     }
+}
+
+.impressum-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    overflow: hidden;
+    padding: 2vh 20px;
+}
+
+.impressum-body h1 {
+    font-size: clamp(2.5em, 10vh, 4em);
+    margin-bottom: 2vh;
+}
+
+.impressum-body h2 {
+    font-size: clamp(1.5em, 6vh, 2.5em);
+    margin-top: 4vh;
+    margin-bottom: 1vh;
+}
+
+.impressum-body p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(16px, 3vh, 22px);
+    line-height: 1.5;
+    text-shadow: none;
+    margin: 0.5vh 0;
+    color: white;
+}
+
+.impressum-body a {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(16px, 3vh, 22px);
+    line-height: 1.5;
+    text-shadow: none;
+    color: #ffc107;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.impressum-body a:hover {
+    text-decoration: underline;
 }
