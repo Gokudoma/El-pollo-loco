@@ -77,6 +77,7 @@ class GameFlowManager {
      * Sets up the next game level.
      */
     goToNextLevel() {
+        resetKeyboardState(); // <-- HIER IST DIE KORREKTUR
         this._resetForNextLevel();
         this._updateStatusBarsForNextLevel();
         this._transitionToGameView();
@@ -106,7 +107,7 @@ class GameFlowManager {
     _resetForNextLevel() {
         this.world.isGameOver = false;
         this.world.character.reset();
-        this.world.level = allLevels[this.world.currentLevelIndex](); // <-- MODIFIED
+        this.world.level = allLevels[this.world.currentLevelIndex]();
         this.world.setWorld();
         this.world.throwableObjects = [];
         this.world.audioManager.bossSoundPlayed = false;
