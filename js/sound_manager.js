@@ -123,9 +123,17 @@ function setGlobalVolume() {
  * Plays the level background sound if the game world exists, is not muted, and not paused.
  */
 function playLevelSound() {
-    if (world && world.audioManager && world.audioManager.levelSound && !isMutedGlobally && !world.gamePaused) {
-        world.audioManager.levelSound.play();
-        world.audioManager.levelSoundPlaying = true;
+    if (world && world.audioManager && world.audioManager.levelSound) {
+        // Pause and reset the sound to prevent multiple instances
+        world.audioManager.levelSound.pause();
+        world.audioManager.levelSound.currentTime = 0;
+        world.audioManager.levelSoundPlaying = false;
+        
+        // Only play if not globally muted and not paused
+        if (!isMutedGlobally && !world.gamePaused) {
+            world.audioManager.levelSound.play();
+            world.audioManager.levelSoundPlaying = true;
+        }
     }
 }
 
