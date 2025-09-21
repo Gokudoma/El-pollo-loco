@@ -43,10 +43,11 @@ function initLevel2() {
         ],
         [
             new Bottle(1300, 360),
+            new Bottle(1400, 360),
+            new Bottle(1500, 360),
             new Bottle(1600, 360),
             new Bottle(1700, 360),
             new Bottle(1800, 360),
-            new Bottle(1900, 360),
         ],
         [
             new Coin(1400, 220),

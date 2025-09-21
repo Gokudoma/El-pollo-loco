@@ -5,8 +5,15 @@
 
 /**
  * Initializes the game world and starts the game.
+ * If a game instance already exists, it calls the restart function instead.
  */
 function startGame() {
+    // If a world object already exists, restart the game instead of creating a new one.
+    if (world) {
+        restartGame();
+        return;
+    }
+
     // Ensure the canvas and keyboard are available globally or passed correctly
     if (typeof canvas !== 'undefined' && typeof Keyboard !== 'undefined') {
         world = new World(canvas, keyboard);
@@ -28,7 +35,7 @@ function startGame() {
  */
 function goToNextLevelFromButton() {
     if (world && world.gameFlowManager) {
-        world.gameFlowManager.goToNextLevel(); // Corrected call
+        world.gameFlowManager.goToNextLevel();
     }
 }
 

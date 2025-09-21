@@ -77,7 +77,9 @@ class GameFlowManager {
      * Sets up the next game level.
      */
     goToNextLevel() {
-        resetKeyboardState(); // <-- HIER IST DIE KORREKTUR
+        if (typeof resetKeyboardState === 'function') {
+            resetKeyboardState();
+        }
         this._resetForNextLevel();
         this._updateStatusBarsForNextLevel();
         this._transitionToGameView();
@@ -106,6 +108,7 @@ class GameFlowManager {
      */
     _resetForNextLevel() {
         this.world.isGameOver = false;
+        this.world.isGameWon = false; // Correction: Reset the game won state.
         this.world.character.reset();
         this.world.level = allLevels[this.world.currentLevelIndex]();
         this.world.setWorld();
@@ -132,6 +135,8 @@ class GameFlowManager {
      */
     _transitionToGameView() {
         document.getElementById('levelCompleteScreen').classList.add('d-none');
+        document.getElementById('gameOverScreen').classList.add('d-none'); // Correction: Hide game over screen on restart.
+        document.getElementById('gameWonScreen').classList.add('d-none');  // Correction: Hide game won screen on restart.
         document.getElementById('canvas').classList.remove('d-none');
         this.world.levelDisplayElement.classList.remove('d-none');
     }
