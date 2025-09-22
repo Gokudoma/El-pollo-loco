@@ -500,12 +500,12 @@ button:active {
 }
 
 .impressum-body h1 {
-    font-size: clamp(2.5em, 10vh, 4em);
+    font-size: 64px;
     margin-bottom: 2vh;
 }
 
 .impressum-body h2 {
-    font-size: clamp(1.5em, 6vh, 2.5em);
+    font-size: 48px;
     margin-top: 4vh;
     margin-bottom: 1vh;
 }
@@ -524,7 +524,6 @@ button:active {
     font-size: clamp(16px, 3vh, 22px);
     line-height: 1.5;
     text-shadow: none;
-    color: #ffc107;
     text-decoration: none;
     font-weight: bold;
 }
